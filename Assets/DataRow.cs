@@ -12,6 +12,17 @@ public class DataRow
     protected readonly IList<int> values = new List<int>();
 
     /// <summary>
+    /// Constructor for the DataRow, initializes everything to 0
+    /// </summary>
+    public DataRow()
+    {
+        for (int col = (int)DataRowColumnEnum.Min; col <= (int)DataRowColumnEnum.Max; col++)
+        {
+            values[col] = 0;
+        }
+    }
+
+    /// <summary>
     /// Constructor for the DataRow, accepts values that the SQL Module will play with.
     /// </summary>
     /// <param name="values">Values for the row, values must be provided in the same order as they must match as exposed columns.</param>
@@ -32,5 +43,52 @@ public class DataRow
     public int GetValueByColumn(DataRowColumnEnum column)
     {
         return values[(int)column];
+    }
+
+    /// <summary>
+    /// Sets the values of the column to a certain value
+    /// </summary>
+    /// <param name="column">The column to set.</param>
+    /// <param name="value">The values to set.</param>
+    public void SetValueByColumn(DataRowColumnEnum column, int value)
+    {
+        values[(int)column] = value;
+    }
+
+    /// <summary>
+    /// Returns the value matching the requested column.
+    /// </summary>
+    /// <param name="column">The column to retrieve.</param>
+    /// <returns>The value associated to that column in the row.</returns>
+    public int GetValueByColumn(DataRowNoneColumnEnum column)
+    {
+        return values[(int)column];
+    }
+
+    /// <summary>
+    /// Sets the values of the column to a certain value
+    /// </summary>
+    /// <param name="column">The column to set.</param>
+    /// <param name="value">The values to set.</param>
+    public void SetValueByColumn(DataRowNoneColumnEnum column, int value)
+    {
+        values[(int)column] = value;
+    }
+
+    /// <summary>
+    /// Compares two rows together index by index.
+    /// </summary>
+    /// <param name="other">The other row to compare against</param>
+    /// <returns>Returns true if both rows are perfectly equal</returns>
+    public bool CompareTo(DataRow other)
+    {
+        for(int i = (int)DataRowColumnEnum.Min; i < (int)DataRowColumnEnum.Max; i++)
+        {
+            if (other.values[i] != values[i])
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }

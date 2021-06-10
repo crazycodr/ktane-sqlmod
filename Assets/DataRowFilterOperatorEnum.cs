@@ -5,5 +5,7 @@
     OperatorLessThanOrEqual = 2,
     OperatorGreaterThan = 3,
     OperatorGreaterThanOrEqual = 4,
-    OperatorNotEqual = 5
+    OperatorNotEqual = 5,
+    OperatorAnd = 6,
+    OperatorOr = 7
 }

@@ -23,5 +23,12 @@ public class SQLModule : MonoBehaviour
         userQuery.group.column = DataRowNoneColumnEnum.ColumnC;
         userQuery.limits.linesSkiped = 7;
         userQuery.limits.linesTaken = 2;
+
+        // Compare the DataSets together to validate if the solution is right
+        if (dataSource.CompareTo(dataSource2))
+        {
+            // Valid
+        }
+
     }
 }
