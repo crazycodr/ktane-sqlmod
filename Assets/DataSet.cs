@@ -21,4 +21,25 @@ public class DataSet
     {
         rows.Add(row);
     }
+
+    /// <summary>
+    /// Compares this dataset and another dataset for equality. Equality is when all rows of both datasets are found on both sides and are completely equal.
+    /// </summary>
+    /// <param name="other">The other dataset to compare against</param>
+    /// <returns>Comparison equality</returns>
+    public bool CompareTo(DataSet other)
+    {
+        if (rows.Count != other.rows.Count)
+        {
+            return false;
+        }
+        for (int i = 0; i < rows.Count; i++)
+        {
+            if (!rows[i].CompareTo(other.rows[i]))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }
