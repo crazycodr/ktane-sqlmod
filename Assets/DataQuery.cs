@@ -16,7 +16,7 @@ public class DataQuery
     /// Represents the filters applied on the data set, this is only one filter but the filter can be a boolean filter of other filters.
     /// </summary>
     /// <remarks>Remember that filters already implement the concept of parenthesis so you have to build the and/or combinations yourself properly.</remarks>
-    public readonly DataQueryFilter filter = null;
+    public DataQueryFilter filter = null;
 
     /// <summary>
     /// Represents the group on the data set.
