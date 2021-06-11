@@ -24,6 +24,10 @@ public class SQLModule : MonoBehaviour
         userQuery.limits.linesSkiped = 7;
         userQuery.limits.linesTaken = 2;
 
+        // Another way to generate a query is using the data query generator which is how you create the target solution
+        DataQuery targetQuery = DataQueryGenerator.GenerateSimple(dataSource);
+        DataSet targetDataSet = targetQuery.Apply(dataSource);
+
         // Compare the DataSets together to validate if the solution is right
         if (dataSource.CompareTo(dataSource2))
         {
