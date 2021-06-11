@@ -30,7 +30,7 @@ public class DataSetFactory
         foreach (List<int> matrixRow in matrix)
         {
             // Copy each list before sending it in so we don't get reference modification errors later by error
-            result.AddRow(new DataRow(new List<int>(matrixRow.ToArray())));
+            result.AddRow(new DataRow(new List<int>(matrixRow)));
         }
         return result;
     }

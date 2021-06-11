@@ -18,8 +18,8 @@ public class SQLModule : MonoBehaviour
         userQuery.selections.Add(new DataQuerySelection(DataRowColumnEnum.ColumnA));
         userQuery.selections.Add(new DataQuerySelection(DataRowColumnEnum.ColumnB));
         userQuery.selections.Add(new DataQuerySelection(DataRowColumnEnum.ColumnC, DataQueryAggregatorEnum.Count));
-        userQuery.filters.Add(new DataQueryFilter(DataRowColumnEnum.ColumnD, DataRowFilterOperatorEnum.OperatorGreaterThan, DataRowColumnEnum.ColumnE));
-        userQuery.filters.Add(new DataQueryFilter(DataRowColumnEnum.ColumnF, DataRowFilterOperatorEnum.OperatorGreaterThan, 6));
+        userQuery.filter = new DataQueryFilter(DataRowColumnEnum.ColumnD, DataRowFilterOperatorEnum.OperatorGreaterThan, DataRowColumnEnum.ColumnE);
+        userQuery.filter = new DataQueryFilter(DataRowColumnEnum.ColumnF, DataRowFilterOperatorEnum.OperatorGreaterThan, 6);
         userQuery.group.column = DataRowNoneColumnEnum.ColumnC;
         userQuery.limits.linesSkiped = 7;
         userQuery.limits.linesTaken = 2;
