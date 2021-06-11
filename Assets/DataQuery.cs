@@ -10,7 +10,7 @@ public class DataQuery
     /// <summary>
     /// Represents the selection expressions the query will do on the data set.
     /// </summary>
-    public readonly IList<DataQuerySelection> selections = new List<DataQuerySelection>();
+    public readonly List<DataQuerySelection> selections = new List<DataQuerySelection>();
 
     /// <summary>
     /// Represents the filters applied on the data set, this is only one filter but the filter can be a boolean filter of other filters.
