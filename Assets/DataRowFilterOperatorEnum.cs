@@ -1,5 +1,6 @@
 ﻿public enum DataRowFilterOperatorEnum
 {
+    OperatorNone = -1,
     OperatorEqual = 0,
     OperatorLessThan = 1,
     OperatorLessThanOrEqual = 2,

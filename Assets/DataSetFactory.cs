@@ -11,12 +11,13 @@ public class DataSetFactory
     /// First matrix set of values to use in the game
     /// </summary>
     public static List<int>[] dataSetMatrix1 = new List<int>[] {
-        new List<int>() { 1, 2, 3, 4, 5, 6, 7 },
-        new List<int>() { 2, 3, 4, 5, 6, 7, 1 },
-        new List<int>() { 3, 4, 5, 6, 7, 1, 2 },
-        new List<int>() { 4, 5, 6, 7, 1, 2, 3 },
-        new List<int>() { 5, 6, 7, 1, 2, 3, 4 },
-        new List<int>() { 6, 7, 1, 2, 3, 4, 5 }
+        new List<int>() { 9, 3, 0, 2, 0, 4, 6 },
+        new List<int>() { 7, 8, 6, 1, 2, 9, 8 },
+        new List<int>() { 2, 0, 5, 4, 7, 3, 1 },
+        new List<int>() { 4, 7, 1, 5, 3, 0, 9 },
+        new List<int>() { 6, 2, 7, 9, 8, 6, 5 },
+        new List<int>() { 1, 9, 3, 7, 6, 5, 4 },
+        new List<int>() { 8, 5, 4, 3, 1, 8, 2 }
     };
 
     /// <summary>

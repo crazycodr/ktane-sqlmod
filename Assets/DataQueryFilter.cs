@@ -6,47 +6,47 @@ public class DataQueryFilter
     /// <summary>
     /// Represents the left operand to perform filter on.
     /// </summary>
-    public readonly DataRowColumnEnum leftOperandColumn;
+    public DataRowColumnEnum leftOperandColumn;
 
     /// <summary>
     /// Represents the left operand to perform filter on when we have a value.
     /// </summary>
-    public readonly int leftOperandValue = 0;
+    public int leftOperandValue = 0;
 
     /// <summary>
     /// Represents the left operand to perform filter on when we have a filter as an expression.
     /// </summary>
-    public readonly DataQueryFilter leftOperandFilter = null;
+    public DataQueryFilter leftOperandFilter = null;
 
     /// <summary>
     /// Represents the type of operand to work with on the left side.
     /// </summary>
-    public readonly OperandTypeEnum leftOperandType = OperandTypeEnum.ValueOperand;
+    public OperandTypeEnum leftOperandType = OperandTypeEnum.ValueOperand;
 
     /// <summary>
     /// Represents the right operand to perform filter on.
     /// </summary>
-    public readonly DataRowColumnEnum rightOperandColumn;
+    public DataRowColumnEnum rightOperandColumn;
 
     /// <summary>
     /// Represents the right operand to perform filter on when we have a value.
     /// </summary>
-    public readonly int rightOperandValue = 0;
+    public int rightOperandValue = 0;
 
     /// <summary>
     /// Represents the right operand to perform filter on when we have a value.
     /// </summary>
-    public readonly DataQueryFilter rightOperandFilter = null;
+    public DataQueryFilter rightOperandFilter = null;
 
     /// <summary>
     /// Represents the type of operand to work with on the right side.
     /// </summary>
-    public readonly OperandTypeEnum rightOperandType = OperandTypeEnum.ValueOperand;
+    public OperandTypeEnum rightOperandType = OperandTypeEnum.ValueOperand;
 
     /// <summary>
     /// Represents the operator to apply on left and right operands.
     /// </summary>
-    public readonly DataRowFilterOperatorEnum op = DataRowFilterOperatorEnum.OperatorEqual;
+    public DataRowFilterOperatorEnum op = DataRowFilterOperatorEnum.OperatorEqual;
 
     /// <summary>
     /// Column to value version
@@ -190,10 +190,21 @@ public class DataQueryFilter
     /// <returns>A bool stating if row passes filter</returns>
     public bool Apply(DataRow row)
     {
+
+        // If the op is none, just take the leftOperandFilter and short-circuit
+        if (op == DataRowFilterOperatorEnum.OperatorNone)
+        {
+            return leftOperandFilter.Apply(row);
+        }
+
         // Resolve the left operand
         int leftOperand = 0;
         if (leftOperandType == OperandTypeEnum.ColumnOperand)
         {
+            if (leftOperandColumn == DataRowColumnEnum.None)
+            {
+                return false;
+            }
             leftOperand = row.GetValueByColumn(leftOperandColumn);
         }
         else if (leftOperandType == OperandTypeEnum.FilterOperand)
@@ -209,11 +220,15 @@ public class DataQueryFilter
         int rightOperand = 0;
         if (rightOperandType == OperandTypeEnum.ColumnOperand)
         {
-            rightOperand = row.GetValueByColumn(leftOperandColumn);
+            if (rightOperandColumn == DataRowColumnEnum.None)
+            {
+                return false;
+            }
+            rightOperand = row.GetValueByColumn(rightOperandColumn);
         }
         else if (rightOperandType == OperandTypeEnum.FilterOperand)
         {
-            rightOperand = leftOperandFilter.Apply(row) ? 1 : 0;
+            rightOperand = rightOperandFilter.Apply(row) ? 1 : 0;
         }
         else
         {
@@ -242,6 +257,67 @@ public class DataQueryFilter
         }
 
         return false;
+    }
+
+    public override string ToString()
+    {
+
+        // Short circuit to prevent none parent is to just get left operand and return it
+        if (op == DataRowFilterOperatorEnum.OperatorNone)
+        {
+            return leftOperandFilter.ToString();
+        }
+
+        // In this case, build the parent and children completely
+        string result = "";
+        switch (leftOperandType)
+        {
+            case OperandTypeEnum.ColumnOperand: result += ColumnEnumText(leftOperandColumn); break;
+            case OperandTypeEnum.FilterOperand: result += "(" + leftOperandFilter.ToString() + ")"; break;
+            case OperandTypeEnum.ValueOperand: result += leftOperandValue; break;
+            default: return "Unknown";
+        }
+        switch (op)
+        {
+            case DataRowFilterOperatorEnum.OperatorAnd: result += " AND "; break;
+            case DataRowFilterOperatorEnum.OperatorOr: result += " OR "; break;
+            case DataRowFilterOperatorEnum.OperatorGreaterThan: result += " > "; break;
+            case DataRowFilterOperatorEnum.OperatorGreaterThanOrEqual: result += " >= "; break;
+            case DataRowFilterOperatorEnum.OperatorLessThan: result += " < "; break;
+            case DataRowFilterOperatorEnum.OperatorLessThanOrEqual: result += " <= "; break;
+            case DataRowFilterOperatorEnum.OperatorNotEqual: result += " <> "; break;
+            case DataRowFilterOperatorEnum.OperatorEqual: result += " = "; break;
+            case DataRowFilterOperatorEnum.OperatorNone: result += " N/A "; break;
+        }
+        switch (rightOperandType)
+        {
+            case OperandTypeEnum.ColumnOperand: result += ColumnEnumText(rightOperandColumn); break;
+            case OperandTypeEnum.FilterOperand: result += "(" + rightOperandFilter.ToString() + ")"; break;
+            case OperandTypeEnum.ValueOperand: result += rightOperandValue; break;
+            default: return "Unknown";
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// Simply returns the next data row column value based on current.
+    /// </summary>
+    /// <param name="current">Current enum value</param>
+    /// <returns>Next enum value</returns>
+    private string ColumnEnumText(DataRowColumnEnum current)
+    {
+        switch (current)
+        {
+            case DataRowColumnEnum.ColumnA: return "A";
+            case DataRowColumnEnum.ColumnB: return "B";
+            case DataRowColumnEnum.ColumnC: return "C";
+            case DataRowColumnEnum.ColumnD: return "D";
+            case DataRowColumnEnum.ColumnE: return "E";
+            case DataRowColumnEnum.ColumnF: return "F";
+            case DataRowColumnEnum.ColumnG: return "G";
+            case DataRowColumnEnum.None: return "-";
+            default: return "-";
+        }
     }
 
 }
