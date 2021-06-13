@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Represents a dataset that the module will use either as a datasource or an expected result.
@@ -11,7 +12,7 @@ public class DataSet
     /// <summary>
     /// Contains all rows in the dataset
     /// </summary>
-    public IList<DataRow> rows = new List<DataRow>();
+    public List<DataRow> rows = new List<DataRow>();
 
     /// <summary>
     /// Adds a row to the dataset
@@ -41,5 +42,15 @@ public class DataSet
             }
         }
         return true;
+    }
+
+    public override string ToString()
+    {
+        string result = "";
+        foreach (DataRow row in rows)
+        {
+            result += row.ToString() + "|";
+        }
+        return result;
     }
 }
