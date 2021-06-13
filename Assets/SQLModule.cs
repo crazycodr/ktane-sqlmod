@@ -223,6 +223,15 @@ public class SQLModule : ModuleScript
     bool OnCheck()
     {
 
+        // Only do something if module is activated and enabled
+        if (!isActiveAndEnabled)
+        {
+            return false;
+        }
+
+        // Play a sound on click
+        GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+
         // Generate a result from query and source
         Debug.Log("Applying query on source");
         Debug.Log(query);
@@ -234,10 +243,12 @@ public class SQLModule : ModuleScript
         Debug.Log(result.ToString());
         if (goal.ToString() == result.ToString())
         {
+            GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
             this.Solve();
         }
         else
         {
+            GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.Strike, transform);
             this.Strike();
         }
 
@@ -251,6 +262,15 @@ public class SQLModule : ModuleScript
     bool OnModeChange()
     {
 
+        // Only do something if module is activated and enabled
+        if (!isActiveAndEnabled)
+        {
+            return false;
+        }
+
+        // Play a sound on click
+        GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+
         // Switch the mode
         isEditorMode = !isEditorMode;
 
@@ -258,30 +278,35 @@ public class SQLModule : ModuleScript
         modeButton.GetComponentInChildren<TextMesh>().text = isEditorMode ? "Goal" : "Editor";
 
         // Hide/Show all applicable items for the editor
-        selectionLabel.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        selection1Button.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        if (selection1GroupButton) selection1GroupButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        selection2Button.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        if (selection2GroupButton) selection2GroupButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        selection3Button.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        if (selection3GroupButton) selection3GroupButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        whereLabel.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        where1LeftOperandButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        where1OperatorButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        where1RightOperandButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        where2LeftOperandButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        where2OperatorButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        where2RightOperandButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        whereCombinationOperatorButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        limitSkipLabel.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        limitSkipButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        limitTakeLabel.GetComponent<MeshRenderer>().enabled = isEditorMode;
-        limitTakeButton.GetComponent<MeshRenderer>().enabled = isEditorMode;
+        // Start with selection components
+        selectionLabel.gameObject.SetActive(isEditorMode);
+        selection1Button.gameObject.SetActive(isEditorMode);
+        if (selection1GroupButton) selection1GroupButton.gameObject.SetActive(isEditorMode);
+        selection2Button.gameObject.SetActive(isEditorMode);
+        if (selection2GroupButton) selection2GroupButton.gameObject.SetActive(isEditorMode);
+        selection3Button.gameObject.SetActive(isEditorMode);
+        if (selection3GroupButton) selection3GroupButton.gameObject.SetActive(isEditorMode);
+
+        // Next, the filter components
+        whereLabel.gameObject.SetActive(isEditorMode);
+        where1LeftOperandButton.gameObject.SetActive(isEditorMode);
+        where1OperatorButton.gameObject.SetActive(isEditorMode);
+        where1RightOperandButton.gameObject.SetActive(isEditorMode);
+        where2LeftOperandButton.gameObject.SetActive(isEditorMode);
+        where2OperatorButton.gameObject.SetActive(isEditorMode);
+        where2RightOperandButton.gameObject.SetActive(isEditorMode);
+        whereCombinationOperatorButton.gameObject.SetActive(isEditorMode);
+
+        // Finaly, the limitation components
+        limitSkipLabel.gameObject.SetActive(isEditorMode);
+        limitSkipButton.gameObject.SetActive(isEditorMode);
+        limitTakeLabel.gameObject.SetActive(isEditorMode);
+        limitTakeButton.gameObject.SetActive(isEditorMode);
 
         // Hide/Show all applicable items for the goal
-        foreach(GameObject goalLabel in goalLabels)
+        foreach (GameObject goalLabel in goalLabels)
         {
-            goalLabel.GetComponent<MeshRenderer>().enabled = !isEditorMode;
+            goalLabel.gameObject.SetActive(!isEditorMode);
         }
 
         // Update the ui to ensure the where filters are properly enabled, we don't want to repeat the logic here
@@ -308,7 +333,7 @@ public class SQLModule : ModuleScript
         }
 
         // Play a sound on click
-        GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.LightBuzzShort, transform);
+        GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.SelectionTick, transform);
         
         // Process the button click
         switch (buttonPressed)
@@ -389,67 +414,64 @@ public class SQLModule : ModuleScript
         // Test if we have a need for the selection buttons and update their state
         if (query.selections.Count >= 1)
         {
-            selection1Button.GetComponent<MeshRenderer>().enabled = true;
-            selection1Button.GetComponent<TextMesh>().text = ColumnEnumText(query.selections[0].column);
-            if (selection1GroupButton) selection1GroupButton.GetComponent<MeshRenderer>().enabled = true;
-            if (selection1GroupButton) selection1GroupButton.GetComponent<TextMesh>().text = AggregatorEnumText(query.selections[0].aggregator);
+            selection1Button.gameObject.SetActive(true);
+            selection1Button.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.selections[0].column);
+            if (selection1GroupButton) selection1GroupButton.gameObject.SetActive(true);
         }
         else
         {
-            selection1Button.GetComponent<MeshRenderer>().enabled = false;
-            if (selection1GroupButton) selection1GroupButton.GetComponent<MeshRenderer>().enabled = false;
+            selection1Button.gameObject.SetActive(false);
+            if (selection1GroupButton) selection1GroupButton.gameObject.SetActive(false);
         }
         if (query.selections.Count >= 2)
         {
-            selection2Button.GetComponent<MeshRenderer>().enabled = true;
-            selection2Button.GetComponent<TextMesh>().text = ColumnEnumText(query.selections[1].column);
-            if (selection2GroupButton) selection2GroupButton.GetComponent<MeshRenderer>().enabled = true;
-            if (selection2GroupButton) selection2GroupButton.GetComponent<TextMesh>().text = AggregatorEnumText(query.selections[1].aggregator);
+            selection2Button.gameObject.SetActive(true);
+            selection2Button.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.selections[1].column);
+            if (selection2GroupButton) selection2GroupButton.gameObject.SetActive(true);
         }
         else
         {
-            selection2Button.GetComponent<MeshRenderer>().enabled = false;
-            if (selection2GroupButton) selection2GroupButton.GetComponent<MeshRenderer>().enabled = false;
+            selection2Button.gameObject.SetActive(false);
+            if (selection2GroupButton) selection2GroupButton.gameObject.SetActive(false);
         }
         if (query.selections.Count >= 3)
         {
-            selection3Button.GetComponent<MeshRenderer>().enabled = true;
-            selection3Button.GetComponent<TextMesh>().text = ColumnEnumText(query.selections[2].column);
-            if (selection3GroupButton) selection3GroupButton.GetComponent<MeshRenderer>().enabled = true;
-            if (selection3GroupButton) selection3GroupButton.GetComponent<TextMesh>().text = AggregatorEnumText(query.selections[2].aggregator);
+            selection3Button.gameObject.SetActive(true);
+            selection3Button.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.selections[2].column);
+            if (selection3GroupButton) selection3GroupButton.gameObject.SetActive(true);
         }
         else
         {
-            selection3Button.GetComponent<MeshRenderer>().enabled = false;
-            if (selection3GroupButton) selection3GroupButton.GetComponent<MeshRenderer>().enabled = false;
+            selection3Button.gameObject.SetActive(false);
+            if (selection3GroupButton) selection3GroupButton.gameObject.SetActive(false);
         }
 
         // Show or hide the second filter
-        where2LeftOperandButton.GetComponent<MeshRenderer>().enabled = (query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
-        where2OperatorButton.GetComponent<MeshRenderer>().enabled = (query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
-        where2RightOperandButton.GetComponent<MeshRenderer>().enabled = (query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
+        where2LeftOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
+        where2OperatorButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
+        where2RightOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
 
         // Update the where combination label
-        whereCombinationOperatorButton.GetComponent<TextMesh>().text = FilterEnumText(query.filter.op);
+        whereCombinationOperatorButton.GetComponentInChildren<TextMesh>().text = FilterEnumText(query.filter.op);
 
         // Adjust the filter 1 data
-        where1LeftOperandButton.GetComponent<TextMesh>().text = ColumnEnumText(query.filter.leftOperandFilter.leftOperandColumn);
-        where1OperatorButton.GetComponent<TextMesh>().text = FilterEnumText(query.filter.leftOperandFilter.op);
-        where1RightOperandButton.GetComponent<TextMesh>().text = query.filter.leftOperandFilter.rightOperandValue.ToString();
+        where1LeftOperandButton.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.filter.leftOperandFilter.leftOperandColumn);
+        where1OperatorButton.GetComponentInChildren<TextMesh>().text = FilterEnumText(query.filter.leftOperandFilter.op);
+        where1RightOperandButton.GetComponentInChildren<TextMesh>().text = query.filter.leftOperandFilter.rightOperandValue.ToString();
 
         // Adjust the filter 2 data
-        where2LeftOperandButton.GetComponent<TextMesh>().text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
-        where2OperatorButton.GetComponent<TextMesh>().text = FilterEnumText(query.filter.rightOperandFilter.op);
-        where2RightOperandButton.GetComponent<TextMesh>().text = query.filter.rightOperandFilter.rightOperandValue.ToString();
+        where2LeftOperandButton.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
+        where2OperatorButton.GetComponentInChildren<TextMesh>().text = FilterEnumText(query.filter.rightOperandFilter.op);
+        where2RightOperandButton.GetComponentInChildren<TextMesh>().text = query.filter.rightOperandFilter.rightOperandValue.ToString();
 
         // Adjust limits
-        where2LeftOperandButton.GetComponent<TextMesh>().text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
-        where2OperatorButton.GetComponent<TextMesh>().text = FilterEnumText(query.filter.rightOperandFilter.op);
-        where2RightOperandButton.GetComponent<TextMesh>().text = query.filter.rightOperandFilter.rightOperandValue.ToString();
+        where2LeftOperandButton.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
+        where2OperatorButton.GetComponentInChildren<TextMesh>().text = FilterEnumText(query.filter.rightOperandFilter.op);
+        where2RightOperandButton.GetComponentInChildren<TextMesh>().text = query.filter.rightOperandFilter.rightOperandValue.ToString();
 
         // Adjust the limit labels
-        limitSkipButton.GetComponent<TextMesh>().text = query.limits.linesSkiped == 0 ? "None" : query.limits.linesSkiped.ToString();
-        limitTakeButton.GetComponent<TextMesh>().text = query.limits.linesTaken == 0 ? "All" : query.limits.linesTaken.ToString();
+        limitSkipButton.GetComponentInChildren<TextMesh>().text = query.limits.linesSkiped == 0 ? "None" : query.limits.linesSkiped.ToString();
+        limitTakeButton.GetComponentInChildren<TextMesh>().text = query.limits.linesTaken == 0 ? "All" : query.limits.linesTaken.ToString();
 
         // Print the query to the log
         Debug.Log(query);
