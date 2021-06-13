@@ -33,4 +33,39 @@ public class DataQuerySelection
         this.aggregator = aggregator;
     }
 
+    public override string ToString()
+    {
+        switch (aggregator)
+        {
+            case DataQueryAggregatorEnum.Sum: return "SUM(" + ColumnEnumText(column) + ")";
+            case DataQueryAggregatorEnum.Count: return "COUNT(" + ColumnEnumText(column) + ")";
+            case DataQueryAggregatorEnum.Avg: return "AVG(" + ColumnEnumText(column) + ")";
+            case DataQueryAggregatorEnum.Min: return "MIN(" + ColumnEnumText(column) + ")";
+            case DataQueryAggregatorEnum.Max: return "MAX(" + ColumnEnumText(column) + ")";
+            case DataQueryAggregatorEnum.None:
+            default: return ColumnEnumText(column);
+        }
+    }
+
+    /// <summary>
+    /// Simply returns the next data row column value based on current.
+    /// </summary>
+    /// <param name="current">Current enum value</param>
+    /// <returns>Next enum value</returns>
+    private string ColumnEnumText(DataRowColumnEnum current)
+    {
+        switch (current)
+        {
+            case DataRowColumnEnum.ColumnA: return "A";
+            case DataRowColumnEnum.ColumnB: return "B";
+            case DataRowColumnEnum.ColumnC: return "C";
+            case DataRowColumnEnum.ColumnD: return "D";
+            case DataRowColumnEnum.ColumnE: return "E";
+            case DataRowColumnEnum.ColumnF: return "F";
+            case DataRowColumnEnum.ColumnG: return "G";
+            case DataRowColumnEnum.None: return "-";
+            default: return "-";
+        }
+    }
+
 }
