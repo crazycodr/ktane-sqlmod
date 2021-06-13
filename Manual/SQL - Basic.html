@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>SQL - Basic — Keep Talking and Nobody Explodes Module</title>
+    <meta name="viewport" content="initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="css/font.css">
+    <script src="js/ktane-utils.js"></script>
+</head>
+<body>
+    <div class="section">
+        <div class="page page-bg-01">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">SQL - Basic</span>
+            </div>
+            <div class="page-content">
+                <img src="img/Component/SQL - Basic.svg" class="diagram">
+                <h2>On the Subject of SQL - Basic</h2>
+                <p class="flavour-text">How fun is it to ride through a large table of numbers to find similarities...</p>
+
+                <p>This module is a SQL code simulator that you have to defuse by producing the proper SQL query based on the expected output that the module provides you with and the documented input. In the module, you should find 3 distinct sections to build SQL which are described below:</p>
+                <p>
+                    <ul>
+                        <li>The selectors: Used to select the columns to return.</li>
+                        <li>The filters: Used to include or exclude data.</li>
+                        <li>The limits: Used to limit the data taken out for the result.</li>
+                    </ul>
+                </p>
+                <p>You will also find a <strong>Goal</strong> button and a <strong>Check</strong> button. Pressing on the <strong>Goal</strong> button shows you what is expected by the module. Once in goal mode, the button changes to an <strong>Editor</strong> button so you can go back to the SQL editor. Pressing on the <strong>Check</strong> button tries to solve the module, if you do not have the proper SQL, you will generate a strike.</p>
+
+                <h3>The input data</h3>
+                <p>Below is a table of data that you must use to craft the SQL query:</p>
+
+                <table>
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>E</th>
+                        <th>F</th>
+                        <th>G</th>
+                    </tr>
+                    <tr><td>9</td><td>3</td><td>0</td><td>2</td><td>0</td><td>4</td><td>6</td></tr>
+                    <tr><td>7</td><td>8</td><td>6</td><td>1</td><td>2</td><td>9</td><td>8</td></tr>
+                    <tr><td>2</td><td>0</td><td>5</td><td>4</td><td>7</td><td>3</td><td>1</td></tr>
+                    <tr><td>4</td><td>7</td><td>1</td><td>5</td><td>3</td><td>0</td><td>9</td></tr>
+                    <tr><td>6</td><td>2</td><td>7</td><td>9</td><td>8</td><td>6</td><td>5</td></tr>
+                    <tr><td>1</td><td>9</td><td>3</td><td>7</td><td>6</td><td>5</td><td>4</td></tr>
+                    <tr><td>8</td><td>5</td><td>4</td><td>3</td><td>1</td><td>8</td><td>2</td></tr>
+                </table>
+            </div>
+            <div class="page-footer relative-footer">Page 1 of 2</div>
+        </div>
+        <div class="page page-bg-01">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">SQL - Basic</span>
+            </div>
+            <div class="page-content">
+
+                <h3>On the subject of SQL</h3>
+                <p>SQL is a programming language that describes how to manipulate sources of data and generate a difference output source. It is comprised of many different keywords, only a minimal list is used in this module:</p>
+
+                <h4>SELECT</h4>
+                <p>SELECT X, Y, Z</p>
+                <p>When you select something, you choose to take all the values that match this X, Y or Z expression and return it. The module offers 3 possible return expressions and they are always simple column references. You must click to select each column to return, you can select between A and G and disable the selection when it shows a "-".</p>
+                <p><strong>Note:</strong> Columns are not always returned in alphabetic order, it could be: A, G then E.</p>
+
+                <h4>WHERE</h4>
+                <p>WHERE X operation Z</p>
+                <p>WHERE introduces a filter, all rows will be tested against the conditions you provide the module with and will be included if they match those conditions. The SQL module makes it simple for you, you can only compare columns to fixed values, that means, you can select a column between A and G on the left side and select a value between 0 and 9 on the right side. The possible operators are all simple mathematical operators that you probably already know such as:</p>
+                <p>
+                    <ul>
+                        <li>Equals or "="</li>
+                        <li>Not equals or "&lt;&gt;"</li>
+                        <li>Less than or "<"</li>
+                        <li>Less than or equal or "<="</li>
+                        <li>Greather than or ">"</li>
+                        <li>Greather than or equal or ">="</li>
+                    </ul>
+                </p>
+                <p>If you think you need 2 conditions to achieve the result, click on the button below the WHERE label to introduce a 2nd filter. You can choose between AND and OR to connect the two filters. AND means both conditions must pass to keep the row, OR means at least one condition must pass to keep the row.</p>
+                <p><strong>Note:</strong> You must always specify at least 1 filter.</p>
+
+                <h4>LIMIT</h4>
+                <p>LIMIT n, o</p>
+                <p>LIMIT comes with two values. For simplicity, the SQL module splits them for you in two selectors:</p>
+                <p>
+                    <ul>
+                        <li>Limit: Indicates the number of rows to keep from the matching results after apply conditions. If you select "All", no rows are discarded.</li>
+                        <li>Skip: Indicates the number of rows to skip after applying conditions. If you select "None", no rows are discarded.</li>
+                    </ul>
+                </p>
+            </div>
+            <div class="page-footer relative-footer">Page 2 of 2</div>
+        </div>
+    </div>
+</body>
+</html>
