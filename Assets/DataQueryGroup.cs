@@ -6,5 +6,5 @@ public class DataQueryGroup
     /// <summary>
     /// Represents the column to perform grouping on.
     /// </summary>
-    public DataRowNoneColumnEnum column = DataRowNoneColumnEnum.None;
+    public DataRowColumnEnum column = DataRowColumnEnum.None;
 }

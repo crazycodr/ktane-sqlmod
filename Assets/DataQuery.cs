@@ -40,7 +40,7 @@ public class DataQuery
         result.rows = source.rows.Where(row => filter == null || filter.Apply(row)).ToList();
 
         // Now group and aggregate the results or just select the end results
-        if (group.column != DataRowNoneColumnEnum.None)
+        if (group.column != DataRowColumnEnum.None)
         {
             // Ensure that all selections are either aggregated or are the column grouped on
             if (selections.Where(s =>
@@ -59,30 +59,32 @@ public class DataQuery
             foreach (IGrouping<int, DataRow> grouping in groupedResults)
             {
                 DataRow resultingRow = new DataRow();
+                int resultColIndex = 0;
                 foreach (DataQuerySelection selection in selections)
                 {
                     switch (selection.aggregator)
                     {
                         case DataQueryAggregatorEnum.Avg:
-                            resultingRow.SetValueByColumn(selection.column, (int)Math.Round(grouping.Average(row => row.GetValueByColumn(selection.column)), 0));
+                            resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, (int)Math.Round(grouping.Average(row => row.GetValueByColumn(selection.column)), 0));
                             break;
                         case DataQueryAggregatorEnum.Count:
-                            resultingRow.SetValueByColumn(selection.column, grouping.Count());
+                            resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, grouping.Count());
                             break;
                         case DataQueryAggregatorEnum.Max:
-                            resultingRow.SetValueByColumn(selection.column, grouping.Max(row => row.GetValueByColumn(selection.column)));
+                            resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, grouping.Max(row => row.GetValueByColumn(selection.column)));
                             break;
                         case DataQueryAggregatorEnum.Min:
-                            resultingRow.SetValueByColumn(selection.column, grouping.Min(row => row.GetValueByColumn(selection.column)));
+                            resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, grouping.Min(row => row.GetValueByColumn(selection.column)));
                             break;
                         case DataQueryAggregatorEnum.Sum:
-                            resultingRow.SetValueByColumn(selection.column, grouping.Sum(row => row.GetValueByColumn(selection.column)));
+                            resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, grouping.Sum(row => row.GetValueByColumn(selection.column)));
                             break;
                         case DataQueryAggregatorEnum.None:
                         default:
-                            resultingRow.SetValueByColumn(selection.column, grouping.Key);
+                            resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, grouping.Key);
                             break;
                     }
+                    resultColIndex++;
                 }
                 result.rows.Add(resultingRow);
             }
@@ -102,9 +104,15 @@ public class DataQuery
             for (int iRow = 0; iRow < result.rows.Count(); iRow++)
             {
                 DataRow resultingRow = new DataRow();
+                int resultColIndex = 0;
                 foreach (DataQuerySelection selection in selections)
                 {
-                    resultingRow.SetValueByColumn(selection.column, result.rows[iRow].GetValueByColumn(selection.column));
+                    if (selection.column == DataRowColumnEnum.None)
+                    {
+                        continue;
+                    }
+                    resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, result.rows[iRow].GetValueByColumn(selection.column));
+                    resultColIndex++;
                 }
                 result.rows[iRow] = resultingRow;
             }
@@ -112,9 +120,18 @@ public class DataQuery
         }
 
         // Apply limits and return the result
-        result.rows = result.rows.Skip(limits.linesSkiped).Take(limits.linesTaken).ToList();
+        result.rows = result.rows.Skip(limits.linesSkiped).Take(limits.linesTaken == 0 ? 999 : limits.linesTaken).ToList();
         return result;
 
+    }
+
+    public override string ToString()
+    {
+        string result = "";
+        result += "SELECT " + (from s in selections where s.column != DataRowColumnEnum.None select s.ToString()).Join(", ");
+        result += filter != null ? " WHERE " + filter.ToString() : "";
+        result += " LIMIT " + limits.linesTaken + (limits.linesSkiped > 0 ? ", " + limits.linesSkiped : "");
+        return result;
     }
 
 }
