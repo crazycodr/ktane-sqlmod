@@ -130,7 +130,7 @@ public class DataQuery
         string result = "";
         result += "SELECT " + (from s in selections where s.column != DataRowColumnEnum.None select s.ToString()).Join(", ");
         result += filter != null ? " WHERE " + filter.ToString() : "";
-        result += " LIMIT " + limits.linesTaken + (limits.linesSkiped > 0 ? ", " + limits.linesSkiped : "");
+        result += " LIMIT " + (limits.linesTaken == 0 ? 999 : limits.linesTaken) + (limits.linesSkiped > 0 ? ", " + limits.linesSkiped : "");
         return result;
     }
 

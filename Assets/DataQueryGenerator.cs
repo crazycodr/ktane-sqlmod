@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Generates a data query for gameplay
@@ -54,9 +55,9 @@ public class DataQueryGenerator
             // Set a filter and keep doing it as long as the result yields no data
             do
             {
-                result.filter = new DataQueryFilter(result.selections.PickRandom().column, possibleOperators.PickRandom(), new Random().Next(0, 9));
+                result.filter = new DataQueryFilter(result.selections.PickRandom().column, possibleOperators.PickRandom(), new System.Random().Next(0, 9));
             }
-            while (result.Apply(source).rows.Count == 0 && result.Apply(source).rows.Count == source.rows.Count);
+            while (result.Apply(source).rows.Count < 2 || result.Apply(source).rows.Count == source.rows.Count);
         }
         else
         {
@@ -64,27 +65,28 @@ public class DataQueryGenerator
             do
             {
                 // Generate the left and right of the main filter
-                DataQueryFilter filter1 = new DataQueryFilter(result.selections.PickRandom().column, possibleOperators.PickRandom(), new Random().Next(0, 9));
-                DataQueryFilter filter2 = new DataQueryFilter(result.selections.PickRandom().column, possibleOperators.PickRandom(), new Random().Next(0, 9));
+                DataQueryFilter filter1 = new DataQueryFilter(result.selections.PickRandom().column, possibleOperators.PickRandom(), new System.Random().Next(0, 9));
+                DataQueryFilter filter2 = new DataQueryFilter(result.selections.PickRandom().column, possibleOperators.PickRandom(), new System.Random().Next(0, 9));
 
                 // Generate the wrapping filter
                 result.filter = new DataQueryFilter(filter1, possibleBooleanOperators.PickRandom(), filter2);
+
             }
-            while (result.Apply(source).rows.Count == 0 && result.Apply(source).rows.Count == source.rows.Count);
+            while (result.Apply(source).rows.Count < 2 || result.Apply(source).rows.Count == source.rows.Count);
         }
 
         // If the result yields 5 or more rows, skip 0-N/2 lines
         DataSet resultData = result.Apply(source);
-        if (resultData.rows.Count >= 5)
+        if (resultData.rows.Count >= 6)
         {
-            result.limits.linesSkiped = new Random().Next(0, resultData.rows.Count / 2);
+            result.limits.linesSkiped = new System.Random().Next(0, resultData.rows.Count / 2);
         }
 
         // If the result yields 4 or more rows, take 2-N lines
         resultData = result.Apply(source);
         if (resultData.rows.Count >= 4)
         {
-            result.limits.linesTaken = new Random().Next(2, resultData.rows.Count);
+            result.limits.linesTaken = new System.Random().Next(2, resultData.rows.Count);
         }
 
         // The resulting query is built

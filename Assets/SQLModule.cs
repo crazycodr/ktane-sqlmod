@@ -243,12 +243,12 @@ public class SQLModule : ModuleScript
         Debug.Log(result.ToString());
         if (goal.ToString() == result.ToString())
         {
-            GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
+            // GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
             this.Solve();
         }
         else
         {
-            GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.Strike, transform);
+            // GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.Strike, transform);
             this.Strike();
         }
 
