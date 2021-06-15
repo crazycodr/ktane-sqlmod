@@ -77,6 +77,6 @@ public class DataRow
     /// </summary>
     public override string ToString()
     {
-        return values.Join(",");
+        return "[" + values.Join(",") + "]";
     }
 }

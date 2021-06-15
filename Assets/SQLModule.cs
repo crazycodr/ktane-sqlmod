@@ -149,17 +149,16 @@ public class SQLModule : ModuleScript
     /// </summary>
     void InitDataObjects()
     {
-        Debug.Log("Initializing Objects");
 
         // For now, use the 1st and only dataset matrix #1
-        Debug.Log("Data source set to 1");
+        Log("Data source set to 1");
         source = DataSetFactory.FromIntMatrix(DataSetFactory.dataSetMatrix1);
-        Debug.Log(source.ToString());
+        Log("Source set to: " + source.ToString());
 
         // Generate a goal
-        Debug.Log("Generating target query");
+        Log("Generating target query");
         DataQuery targetQuery = DataQueryGenerator.GenerateSimple(source);
-        Debug.Log(targetQuery);
+        Log("Target query is: " + targetQuery.ToString());
         goal = targetQuery.Apply(source);
 
         // Push the data of the goal into the goal labels
@@ -190,7 +189,6 @@ public class SQLModule : ModuleScript
     /// </summary>
     void InitUI()
     {
-        Debug.Log("Initializing UI interaction hooks");
 
         // Editor buttons, some are optional based on version of module
         selection1Button.OnInteract += delegate () { OnPress(UIButtonEnum.Selection1); return false; };
@@ -224,7 +222,13 @@ public class SQLModule : ModuleScript
     {
 
         // Only do something if module is activated and enabled
-        if (!isActiveAndEnabled)
+        if (!isActiveAndEnabled && !IsSolved)
+        {
+            return false;
+        }
+
+        // Only take input if not solved
+        if (IsSolved)
         {
             return false;
         }
@@ -233,24 +237,25 @@ public class SQLModule : ModuleScript
         GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
 
         // Generate a result from query and source
-        Debug.Log("Applying query on source");
-        Debug.Log(query);
+        Log("Applying query on source: " + query.ToString());
         DataSet result = query.Apply(source);
+        Log("Result is: " + result.ToString());
 
         // Compare result and goal and strike or solve
-        Debug.Log("Testing for equality");
-        Debug.Log(goal.ToString());
-        Debug.Log(result.ToString());
+        Log("Testing against goal: " + goal.ToString());
         if (goal.ToString() == result.ToString())
         {
-            // GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
-            this.Solve();
+            Log("Module disarmed");
+            Solve();
         }
         else
         {
-            // GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.Strike, transform);
-            this.Strike();
+            Log("Module striked due to dataset differences");
+            Strike();
         }
+
+        // Update the UI once this has hapenned
+        UpdateUI();
 
         return false;
     }
@@ -328,6 +333,12 @@ public class SQLModule : ModuleScript
 
         // Only do something if module is activated and enabled
         if (!isActiveAndEnabled)
+        {
+            return;
+        }
+
+        // Only take input if not solved
+        if (IsSolved)
         {
             return;
         }
@@ -411,6 +422,7 @@ public class SQLModule : ModuleScript
     /// </summary>
     private void UpdateUI()
     {
+
         // Test if we have a need for the selection buttons and update their state
         if (query.selections.Count >= 1)
         {
@@ -472,9 +484,6 @@ public class SQLModule : ModuleScript
         // Adjust the limit labels
         limitSkipButton.GetComponentInChildren<TextMesh>().text = query.limits.linesSkiped == 0 ? "None" : query.limits.linesSkiped.ToString();
         limitTakeButton.GetComponentInChildren<TextMesh>().text = query.limits.linesTaken == 0 ? "All" : query.limits.linesTaken.ToString();
-
-        // Print the query to the log
-        Debug.Log(query);
 
     }
 

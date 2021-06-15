@@ -22,18 +22,51 @@
                 <h2>On the Subject of SQL - Basic</h2>
                 <p class="flavour-text">How fun is it to ride through a large table of numbers to find similarities...</p>
 
-                <p>This module is a SQL code simulator that you have to defuse by producing the proper SQL query based on the expected output that the module provides you with and the documented input. In the module, you should find 3 distinct sections to build SQL which are described below:</p>
-                <p>
-                    <ul>
-                        <li>The selectors: Used to select the columns to return.</li>
-                        <li>The filters: Used to include or exclude data.</li>
-                        <li>The limits: Used to limit the data taken out for the result.</li>
-                    </ul>
-                </p>
-                <p>You will also find a <strong>Goal</strong> button and a <strong>Check</strong> button. Pressing on the <strong>Goal</strong> button shows you what is expected by the module. Once in goal mode, the button changes to an <strong>Editor</strong> button so you can go back to the SQL editor. Pressing on the <strong>Check</strong> button tries to solve the module, if you do not have the proper SQL, you will generate a strike.</p>
+                <p>This module is a SQL code simulator that you have to defuse by producing the proper SQL query based on the expected output that the module provides you with and the documented input. In the module, you will find 3 distinct sections to build SQL which are described below. You will also find a <strong>Goal</strong> button and a <strong>Check</strong> button.</p>
 
-                <h3>The input data</h3>
-                <p>Below is a table of data that you must use to craft the SQL query:</p>
+                <h2>Operation</h2>
+                <p>Press on the <strong>Goal</strong> button to show you what is expected by the module. The expectation is a matrix of numbers such as below. The result can be from 1 to 4 rows and 2 to 3 columns, for example:</p>
+
+                <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
+                    <table style="align-self: flex-start;">
+                        <tr><td>2</td><td>9</td><td>6</td></tr>
+                        <tr><td>4</td><td>2</td><td>1</td></tr>
+                        <tr><td>7</td><td>1</td><td>4</td></tr>
+                        <tr><td>3</td><td>8</td><td>2</td></tr>
+                    </table>
+                    <table style="align-self: flex-start;">
+                        <tr><td>2</td><td>9</td><td>6</td></tr>
+                        <tr><td>4</td><td>2</td><td>1</td></tr>
+                    </table>
+                    <table style="align-self: flex-start;">
+                        <tr><td>2</td><td>9</td></tr>
+                        <tr><td>4</td><td>2</td></tr>
+                        <tr><td>7</td><td>1</td></tr>
+                    </table>
+                    <table style="align-self: flex-start;">
+                        <tr><td>2</td><td>9</td><td>6</td></tr>
+                    </table>
+                </div>
+                <p>&nbsp;</p>
+
+                <p>This matrix is extracted from the input below using an SQL query. You craft the SQL query by clicking on the different buttons to cycle through the possible values in each button.</p>
+
+                <p><blockquote><strong>Note</strong>: If you do not know what SQL is, refer to the sections below to learn how to build SQL queries.</blockquote></p>
+
+                <p>Pressing on the <strong>Check</strong> button tries to solve the module by computing a result from the crafted SQL. The crafted SQL doesn't need to be exactly the one used to generate the goal, as long as it generates the same result it's fine. If you do not provide proper SQL, you will generate a strike. When in goal mode, the <strong>Goal</strong> button changes to an <strong>Editor</strong> button so you can go back to the SQL editor.</p>
+            </div>
+            <div class="page-footer relative-footer">Page 1 of 4</div>
+        </div>
+        <div class="page page-bg-01">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">SQL - Basic</span>
+            </div>
+            <div class="page-content">
+
+                <h2>The input data</h2>
+                <p>Below is a table of data that you must use as an input. You must find the values from the goal matrix inside this table and craft the proper SQL query to generate the same output.</p>
+                <p>Remember that SQL is not necessarily in reading order, it will be from top to bottom but you can select any column you wish in any order you want.</p>
 
                 <table>
                     <tr>
@@ -54,7 +87,7 @@
                     <tr><td>8</td><td>5</td><td>4</td><td>3</td><td>1</td><td>8</td><td>2</td></tr>
                 </table>
             </div>
-            <div class="page-footer relative-footer">Page 1 of 2</div>
+            <div class="page-footer relative-footer">Page 2 of 4</div>
         </div>
         <div class="page page-bg-01">
             <div class="page-header">
@@ -64,12 +97,31 @@
             <div class="page-content">
 
                 <h3>On the subject of SQL</h3>
-                <p>SQL is a programming language that describes how to manipulate sources of data and generate a difference output source. It is comprised of many different keywords, only a minimal list is used in this module:</p>
+                <p>SQL is a programming language that describes how to manipulate sources of data and generate a difference output source. It is comprised of many different keywords, only a minimal list is used in this module.</p>
+
+                <h4>How SQL is processed</h4>
+                <p>SQL is processed always in the same way:<p>
+                <p>
+                    <ol>
+                        <li>Each row is compared against the filters. (The WHERE clause) If a row complies with the filter expression it is kept for further processing.</li>
+                        <li>Each row that passes the filter expression is then processed against the selection expressions. (The SELECT clause) The first SELECT expression is what goes in the first column of the ouput. If you use G as the first SELECT expression, the values of the G column go into the first column of the result.</li>
+                        <li>Finaly, each row of the end result is processed against the LIMIT clause, that is skip M amount of rows from the result and then keep only N lines after that.</li>
+                    </ol>
+                </p>
 
                 <h4>SELECT</h4>
                 <p>SELECT X, Y, Z</p>
                 <p>When you select something, you choose to take all the values that match this X, Y or Z expression and return it. The module offers 3 possible return expressions and they are always simple column references. You must click to select each column to return, you can select between A and G and disable the selection when it shows a "-".</p>
                 <p><strong>Note:</strong> Columns are not always returned in alphabetic order, it could be: A, G then E.</p>
+            </div>
+            <div class="page-footer relative-footer">Page 3 of 4</div>
+        </div>
+        <div class="page page-bg-01">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">SQL - Basic</span>
+            </div>
+            <div class="page-content">
 
                 <h4>WHERE</h4>
                 <p>WHERE X operation Z</p>
@@ -97,7 +149,7 @@
                     </ul>
                 </p>
             </div>
-            <div class="page-footer relative-footer">Page 2 of 2</div>
+            <div class="page-footer relative-footer">Page 3 of 4</div>
         </div>
     </div>
 </body>

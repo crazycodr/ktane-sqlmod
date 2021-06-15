@@ -46,11 +46,11 @@ public class DataSet
 
     public override string ToString()
     {
-        string result = "";
+        List<string> results = new List<string>();
         foreach (DataRow row in rows)
         {
-            result += row.ToString() + "|";
+            results.Add(row.ToString());
         }
-        return result;
+        return "[" + results.Join(",") + "]";
     }
 }
