@@ -8,6 +8,53 @@
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
     <link rel="stylesheet" type="text/css" href="css/font.css">
+    <style>
+        .arrow {
+          width: 50px;
+        }
+
+        .line {
+          margin-top: 7px;
+          width: 35px;
+          background: darkgray;
+          height: 5px;
+          float: left;
+        }
+
+        .point {
+          width: 0;
+          height: 0;
+          border-top: 10px solid transparent;
+          border-bottom: 10px solid transparent;
+          border-left: 15px solid darkgray;
+          float: right;
+        }
+
+        .bb {
+            border-bottom: 3px solid black;
+        }
+
+        .tb {
+            border-top: 3px solid black;
+        }
+
+        .lb {
+            border-left: 3px solid black;
+        }
+
+        .rb {
+            border-right: 3px solid black;
+        }
+
+        .hcell {
+            background-color: #eaeaea;
+        }
+
+        .scell {
+            background-color: #cacaca;
+        }
+
+    </style>
     <script src="js/ktane-utils.js"></script>
 </head>
 <body>
@@ -22,10 +69,10 @@
                 <h2>On the Subject of SQL - Basic</h2>
                 <p class="flavour-text">How fun is it to ride through a large table of numbers to find similarities...</p>
 
-                <p>This module is a SQL code simulator that you have to defuse by producing the proper SQL query based on the expected output that the module provides you with and the documented input. In the module, you will find 3 distinct sections to build SQL which are described below. You will also find a <strong>Goal</strong> button and a <strong>Check</strong> button.</p>
+                <p>This module is a SQL code simulator that you have to defuse by producing the proper SQL query. You have an input data in this document and the module allows you to see a goal that you must reproduce. Use the documentation to build a SQL query that will reproduce the expected solution from the input data.</p>
 
-                <h2>Operation</h2>
-                <p>Press on the <strong>Goal</strong> button to show you what is expected by the module. The expectation is a matrix of numbers such as below. The result can be from 1 to 4 rows and 2 to 3 columns, for example:</p>
+                <h2>The goal button</h2>
+                <p>Press on the <strong>Goal</strong> button to show you what is expected by the module. The expectation is a matrix of numbers. The result can be from 1 to 4 rows by 2 to 3 columns. Here are a few example <strong>but definitely not limited to</strong>:</p>
 
                 <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
                     <table style="align-self: flex-start;">
@@ -49,13 +96,14 @@
                 </div>
                 <p>&nbsp;</p>
 
-                <p>This matrix is extracted from the input below using an SQL query. You craft the SQL query by clicking on the different buttons to cycle through the possible values in each button.</p>
+                <h2>The check button</h2>
 
-                <p><blockquote><strong>Note</strong>: If you do not know what SQL is, refer to the sections below to learn how to build SQL queries.</blockquote></p>
+                <p>Pressing on the <strong>Check</strong> button tries to solve the module. When you press on <strong>check</strong>, the module compiles the SQL query and applies it on the input data. The result is compared to the goal matrix and you either get a strike or a solve depending if you found the proper SQL.</p>
 
-                <p>Pressing on the <strong>Check</strong> button tries to solve the module by computing a result from the crafted SQL. The crafted SQL doesn't need to be exactly the one used to generate the goal, as long as it generates the same result it's fine. If you do not provide proper SQL, you will generate a strike. When in goal mode, the <strong>Goal</strong> button changes to an <strong>Editor</strong> button so you can go back to the SQL editor.</p>
+                <blockquote><strong>Note:</strong> The crafted SQL doesn't need to be the one used to generate the goal matrix, as long as it generates the same result it's fine.</blockquote>
+
             </div>
-            <div class="page-footer relative-footer">Page 1 of 4</div>
+            <div class="page-footer relative-footer">Page 1 of 6</div>
         </div>
         <div class="page page-bg-01">
             <div class="page-header">
@@ -63,31 +111,102 @@
                 <span class="page-header-section-title">SQL - Basic</span>
             </div>
             <div class="page-content">
+
+                <h2>Solving the module</h2>
+
+                <p>To solve the module, you have to find the numbers from the goal matrix in the input data. The rows are always from top to bottom, you'll see why later, but the columns can be in any order. Example:</p>
+
+                <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
+                    <div>
+                        <p><strong>Goal matrix</strong></p>
+                        <table style="align-self: flex-start;">
+                            <tr><td>2</td><td>9</td><td>6</td></tr>
+                            <tr><td>4</td><td>2</td><td>1</td></tr>
+                        </table>
+                    </div>
+                    <div style="align-self: center">
+                        <div class="arrow">
+                            <div class="line"></div>
+                            <div class="point"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <p><strong>Example input data</strong></p>
+                        <table>
+                            <tr>
+                                <th class="hcell tb lb rb">A</th>
+                                <th>B</th>
+                                <th class="hcell tb lb rb">C</th>
+                                <th>D</th>
+                                <th>E</th>
+                                <th class="hcell tb lb rb">F</th>
+                            </tr>
+                            <tr>
+                                <td class="hcell lb rb">9</td>
+                                <td>0</td>
+                                <td class="hcell lb rb">1</td>
+                                <td>6</td>
+                                <td>7</td>
+                                <td class="hcell lb rb">3</td>
+                            </tr>
+                            <tr>
+                                <td class="scell rb lb tb bb">6</td>
+                                <td class="hcell tb bb">8</td>
+                                <td class="scell rb lb tb bb">2</td>
+                                <td class="hcell tb bb">4</td>
+                                <td class="hcell tb bb">5</td>
+                                <td class="scell rb lb tb bb">9</td>
+                            </tr>
+                            <tr>
+                                <td class="hcell lb rb">2</td>
+                                <td>7</td>
+                                <td class="hcell lb rb">5</td>
+                                <td>3</td>
+                                <td>6</td>
+                                <td class="hcell lb rb">1</td>
+                            </tr>
+                            <tr>
+                                <td class="scell rb lb tb bb">1</td>
+                                <td class="hcell tb bb">3</td>
+                                <td class="scell rb lb tb bb">4</td>
+                                <td class="hcell tb bb">9</td>
+                                <td class="hcell tb bb">5</td>
+                                <td class="scell rb lb tb bb">2</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <p>&nbsp;</p>
 
                 <h2>The input data</h2>
-                <p>Below is a table of data that you must use as an input. You must find the values from the goal matrix inside this table and craft the proper SQL query to generate the same output.</p>
-                <p>Remember that SQL is not necessarily in reading order, it will be from top to bottom but you can select any column you wish in any order you want.</p>
+                <p>The real input data that you must use as an input to solve the module is this one. You must find the values from the goal matrix inside this table and craft the proper SQL query to generate the same output.</p>
 
-                <table>
-                    <tr>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>C</th>
-                        <th>D</th>
-                        <th>E</th>
-                        <th>F</th>
-                        <th>G</th>
-                    </tr>
-                    <tr><td>9</td><td>3</td><td>0</td><td>2</td><td>0</td><td>4</td><td>6</td></tr>
-                    <tr><td>7</td><td>8</td><td>6</td><td>1</td><td>2</td><td>9</td><td>8</td></tr>
-                    <tr><td>2</td><td>0</td><td>5</td><td>4</td><td>7</td><td>3</td><td>1</td></tr>
-                    <tr><td>4</td><td>7</td><td>1</td><td>5</td><td>3</td><td>0</td><td>9</td></tr>
-                    <tr><td>6</td><td>2</td><td>7</td><td>9</td><td>8</td><td>6</td><td>5</td></tr>
-                    <tr><td>1</td><td>9</td><td>3</td><td>7</td><td>6</td><td>5</td><td>4</td></tr>
-                    <tr><td>8</td><td>5</td><td>4</td><td>3</td><td>1</td><td>8</td><td>2</td></tr>
-                </table>
+                <div style="display:flex; flex-direction: row; justify-content: space-around; align-content: center;">
+                    <table>
+                        <tr>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>E</th>
+                            <th>F</th>
+                            <th>G</th>
+                        </tr>
+                        <tr><td>9</td><td>3</td><td>0</td><td>2</td><td>0</td><td>4</td><td>6</td></tr>
+                        <tr><td>7</td><td>8</td><td>6</td><td>1</td><td>2</td><td>9</td><td>8</td></tr>
+                        <tr><td>2</td><td>0</td><td>5</td><td>4</td><td>7</td><td>3</td><td>1</td></tr>
+                        <tr><td>4</td><td>7</td><td>1</td><td>5</td><td>3</td><td>0</td><td>9</td></tr>
+                        <tr><td>6</td><td>2</td><td>7</td><td>9</td><td>8</td><td>6</td><td>5</td></tr>
+                        <tr><td>1</td><td>9</td><td>3</td><td>7</td><td>6</td><td>5</td><td>4</td></tr>
+                        <tr><td>8</td><td>5</td><td>4</td><td>3</td><td>1</td><td>8</td><td>2</td></tr>
+                    </table>
+
+                    <blockquote style="flex-basis: 50%;">
+                        <p><strong>Remember:</strong></p>
+                        <p>SQL results are not necessarily in reading order, it will be <strong>from top to bottom</strong> but you can <strong>SELECT</strong> any column you wish in any order.</p></blockquote>
+                </div>
             </div>
-            <div class="page-footer relative-footer">Page 2 of 4</div>
+            <div class="page-footer relative-footer">Page 2 of 6</div>
         </div>
         <div class="page page-bg-01">
             <div class="page-header">
@@ -96,25 +215,67 @@
             </div>
             <div class="page-content">
 
-                <h3>On the subject of SQL</h3>
+                <h2>On the subject of SQL</h2>
                 <p>SQL is a programming language that describes how to manipulate sources of data and generate a difference output source. It is comprised of many different keywords, only a minimal list is used in this module.</p>
 
-                <h4>How SQL is processed</h4>
+                <h3>How SQL is processed</h3>
                 <p>SQL is processed always in the same way:<p>
                 <p>
                     <ol>
-                        <li>Each row is compared against the filters. (The WHERE clause) If a row complies with the filter expression it is kept for further processing.</li>
-                        <li>Each row that passes the filter expression is then processed against the selection expressions. (The SELECT clause) The first SELECT expression is what goes in the first column of the ouput. If you use G as the first SELECT expression, the values of the G column go into the first column of the result.</li>
-                        <li>Finaly, each row of the end result is processed against the LIMIT clause, that is skip M amount of rows from the result and then keep only N lines after that.</li>
+                        <li style="margin-bottom: 1em">Each row is compared against the filters. If a row complies with the filter expression it is kept for further processing. (See <strong>WHERE</strong> clauses below for more information)</li>
+
+                        <li style="margin-bottom: 1em">Each row that passes the filter expression is then processed against the selection expressions. (See <strong>SELECT</strong> clauses below for more information)</li>
+
+                        <li style="margin-bottom: 1em">Finaly, each row of the end result is processed against the LIMIT clause; that is <strong>SKIP</strong> X amount of rows from the result and then <strong>TAKE</strong> only Y lines after that. (See <strong>LIMIT</strong> clauses below for more information)</li>
                     </ol>
                 </p>
 
-                <h4>SELECT</h4>
-                <p>SELECT X, Y, Z</p>
-                <p>When you select something, you choose to take all the values that match this X, Y or Z expression and return it. The module offers 3 possible return expressions and they are always simple column references. You must click to select each column to return, you can select between A and G and disable the selection when it shows a "-".</p>
-                <p><strong>Note:</strong> Columns are not always returned in alphabetic order, it could be: A, G then E.</p>
+                <h3>SELECT X, Y, Z</h3>
+                <p>When you <strong>SELECT</strong> something, you choose to take all the values that match this X, Y or Z expression and return it. The module offers 3 possible return expressions and they are always simple column references. You must click to select each column to return, you can select between A and G or disable the selection when it shows a "-". Here's an example of how it works:</p>
+
+                <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
+                    <table>
+                        <tr>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>E</th>
+                            <th>F</th>
+                            <th>G</th>
+                        </tr>
+                        <tr><td>9</td><td>3</td><td>0</td><td>2</td><td>0</td><td>4</td><td>6</td></tr>
+                        <tr><td>7</td><td>8</td><td>6</td><td>1</td><td>2</td><td>9</td><td>8</td></tr>
+                        <tr><td>2</td><td>0</td><td>5</td><td>4</td><td>7</td><td>3</td><td>1</td></tr>
+                        <tr><td>4</td><td>7</td><td>1</td><td>5</td><td>3</td><td>0</td><td>9</td></tr>
+                        <tr><td>6</td><td>2</td><td>7</td><td>9</td><td>8</td><td>6</td><td>5</td></tr>
+                        <tr><td>1</td><td>9</td><td>3</td><td>7</td><td>6</td><td>5</td><td>4</td></tr>
+                        <tr><td>8</td><td>5</td><td>4</td><td>3</td><td>1</td><td>8</td><td>2</td></tr>
+                    </table>
+                    <div style="align-self: center; flex-basis: 33%;">
+                        <p><strong>SQL:</strong> SELECT D, A</p>
+                        <p>Notice there are no 3<sup>rd</sup> expression. We used a "-".</p>
+                        <div class="arrow">
+                            <div class="line"></div>
+                            <div class="point"></div>
+                        </div>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>D</th>
+                            <th>A</th>
+                        </tr>
+                        <tr><td>2</td><td>9</td></tr>
+                        <tr><td>1</td><td>7</td></tr>
+                        <tr><td>4</td><td>2</td></tr>
+                        <tr><td>5</td><td>4</td></tr>
+                        <tr><td>9</td><td>6</td></tr>
+                        <tr><td>7</td><td>1</td></tr>
+                        <tr><td>3</td><td>8</td></tr>
+                    </table>
+                </div>
             </div>
-            <div class="page-footer relative-footer">Page 3 of 4</div>
+            <div class="page-footer relative-footer">Page 3 of 6</div>
         </div>
         <div class="page page-bg-01">
             <div class="page-header">
@@ -123,9 +284,8 @@
             </div>
             <div class="page-content">
 
-                <h4>WHERE</h4>
-                <p>WHERE X operation Z</p>
-                <p>WHERE introduces a filter, all rows will be tested against the conditions you provide the module with and will be included if they match those conditions. The SQL module makes it simple for you, you can only compare columns to fixed values, that means, you can select a column between A and G on the left side and select a value between 0 and 9 on the right side. The possible operators are all simple mathematical operators that you probably already know such as:</p>
+                <h3>WHERE X operation Y</h3>
+                <p><strong>WHERE</strong> introduces filters and all rows will be tested against the conditions you provide the module with. A row is kept in the output only if it complies with the filter condition. This SQL emulator makes it simple for you, you can only compare columns to fixed values such as: A < 2, C = 3, F >= 5. The possible operators are all simple mathematical operators that you already know (In most cases) such as:</p>
                 <p>
                     <ul>
                         <li>Equals or "="</li>
@@ -136,20 +296,214 @@
                         <li>Greather than or equal or ">="</li>
                     </ul>
                 </p>
-                <p>If you think you need 2 conditions to achieve the result, click on the button below the WHERE label to introduce a 2nd filter. You can choose between AND and OR to connect the two filters. AND means both conditions must pass to keep the row, OR means at least one condition must pass to keep the row.</p>
-                <p><strong>Note:</strong> You must always specify at least 1 filter.</p>
+                <p>Here's a basic example of a single filter:</p>
 
-                <h4>LIMIT</h4>
-                <p>LIMIT n, o</p>
-                <p>LIMIT comes with two values. For simplicity, the SQL module splits them for you in two selectors:</p>
+                <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
+                    <table>
+                        <tr>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>E</th>
+                            <th>F</th>
+                            <th>G</th>
+                        </tr>
+                        <tr><td>9</td><td>3</td><td>0</td><td>2</td><td>0</td><td>4</td><td>6</td></tr>
+                        <tr><td>7</td><td>8</td><td>6</td><td>1</td><td>2</td><td>9</td><td>8</td></tr>
+                        <tr><td>2</td><td>0</td><td>5</td><td>4</td><td>7</td><td>3</td><td>1</td></tr>
+                        <tr><td>4</td><td>7</td><td>1</td><td>5</td><td>3</td><td>0</td><td>9</td></tr>
+                        <tr><td>6</td><td>2</td><td>7</td><td>9</td><td>8</td><td>6</td><td>5</td></tr>
+                        <tr><td>1</td><td>9</td><td>3</td><td>7</td><td>6</td><td>5</td><td>4</td></tr>
+                        <tr><td>8</td><td>5</td><td>4</td><td>3</td><td>1</td><td>8</td><td>2</td></tr>
+                    </table>
+                    <div style="align-self: center">
+                        <p><strong>SQL:</strong> WHERE C >= 5</p>
+                        <div class="arrow">
+                            <div class="line"></div>
+                            <div class="point"></div>
+                        </div>
+                    </div>
+                    <table style="align-self: flex-start;">
+                        <tr>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>E</th>
+                            <th>F</th>
+                            <th>G</th>
+                        </tr>
+                        <tr><td>7</td><td>8</td><td>6</td><td>1</td><td>2</td><td>9</td><td>8</td></tr>
+                        <tr><td>2</td><td>0</td><td>5</td><td>4</td><td>7</td><td>3</td><td>1</td></tr>
+                        <tr><td>6</td><td>2</td><td>7</td><td>9</td><td>8</td><td>6</td><td>5</td></tr>
+                    </table>
+                </div>
+                <p>&nbsp;</p>
+
+                <blockquote><p><strong>Note:</strong> Conditions can be applied to any column, not just the <strong>SELECT</strong>ed ones.</p></blockquote>
+            </div>
+            <div class="page-footer relative-footer">Page 4 of 6</div>
+        </div>
+        <div class="page page-bg-01">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">SQL - Basic</span>
+            </div>
+            <div class="page-content">
+
+                <h3>WHERE X AND/OR Y</h3>
+
+                <p>If you think you need 2 conditions to achieve the result, click on the button below the <strong>WHERE</strong> label to introduce a 2<sup>nd</sup> filter. You can choose between <strong>AND</strong> and <strong>OR</strong> to connect the two filters. <strong>AND</strong> means both conditions must pass to keep the row, <strong>OR</strong> means at least one condition must pass to keep the row. Examples:</p>
+
+                <table width="100%">
+                    <tr>
+                        <th>Example data</th>
+                        <th>Condition</th>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <table>
+                                <tr>
+                                    <th>A</th>
+                                    <th>B</th>
+                                    <th>C</th>
+                                </tr>
+                                <tr><td>9</td><td>3</td><td>0</td></tr>
+                                <tr><td>7</td><td>8</td><td>6</td></tr>
+                                <tr><td>2</td><td>0</td><td>5</td></tr>
+                                <tr><td>4</td><td>7</td><td>1</td></tr>
+                            </table>
+                        </td>
+                        <td align="center">WHERE A < 7 AND B >= 3</td>
+                        <td align="center">
+                            <table>
+                                <tr>
+                                    <th>A</th>
+                                    <th>B</th>
+                                    <th>C</th>
+                                </tr>
+                                <tr><td>9</td><td>3</td><td>0</td></tr>
+                                <tr><td>7</td><td class="bb tb lb rb hcell">8</td><td>6</td></tr>
+                                <tr><td class="tb bb lb rb hcell">2</td><td>0</td><td>5</td></tr>
+                                <tr><td class="tb bb lb scell">4</td><td class="bb tb rb scell">7</td><td>1</td></tr>
+                            </table>
+                            <div style="position: relative; top: -7.5em; border-top: 3px solid darkgray; height: 3px"></div>
+                            <div style="position: relative; top: -5.75em; border-top: 3px solid darkgray; height: 3px"></div>
+                            <div style="position: relative; top: -4em; border-top: 3px solid darkgray; height: 3px"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <table>
+                                <tr>
+                                    <th>A</th>
+                                    <th>B</th>
+                                    <th>C</th>
+                                </tr>
+                                <tr><td>9</td><td>3</td><td>0</td></tr>
+                                <tr><td>7</td><td>8</td><td>6</td></tr>
+                                <tr><td>2</td><td>0</td><td>5</td></tr>
+                                <tr><td>4</td><td>7</td><td>1</td></tr>
+                            </table>
+                        </td>
+                        <td align="center">WHERE B &lt;&gt; 8 OR C <= 2</td>
+                        <td align="center">
+                            <table>
+                                <tr>
+                                    <th>A</th>
+                                    <th>B</th>
+                                    <th>C</th>
+                                </tr>
+                                <tr><td>9</td><td class="bb tb lb scell">3</td><td class="bb tb rb scell">0</td></tr>
+                                <tr><td>7</td><td>8</td><td>6</td></tr>
+                                <tr><td>2</td><td class="tb lb rb scell">0</td><td>5</td></tr>
+                                <tr><td>4</td><td class="bb lb scell">7</td><td class="bb tb rb scell">1</td></tr>
+                            </table>
+                            <div style="position: relative; top: -5.5em; border-top: 3px solid darkgray; height: 3px"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="page-footer relative-footer">Page 5 of 6</div>
+        </div>
+        <div class="page page-bg-01">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">SQL - Basic</span>
+            </div>
+            <div class="page-content">
+
+                <h3>LIMIT X, Y</h3>
+                <p><strong>LIMIT</strong> comes with one or two values. For simplicity, the SQL module splits them for you in two selectors:</p>
                 <p>
                     <ul>
-                        <li>Limit: Indicates the number of rows to keep from the matching results after apply conditions. If you select "All", no rows are discarded.</li>
-                        <li>Skip: Indicates the number of rows to skip after applying conditions. If you select "None", no rows are discarded.</li>
+                        <li style="margin-bottom: 1em"><strong>LIMIT</strong>: Indicates the number of rows to keep from the matching results after applying conditions. If you select "All", no rows are discarded.</li>
+                        <li style="margin-bottom: 1em"><strong>SKIP</strong>: Indicates the number of rows to skip after applying conditions. If you select "None", no rows are discarded.</li>
                     </ul>
-                </p>
+                 Examples:</p>
+
+                <table width="100%">
+                    <tr>
+                        <th>Example data</th>
+                        <th>Condition</th>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <table>
+                                <tr><td>9</td><td>3</td><td>0</td></tr>
+                                <tr><td>7</td><td>8</td><td>6</td></tr>
+                                <tr><td>2</td><td>0</td><td>5</td></tr>
+                                <tr><td>4</td><td>7</td><td>1</td></tr>
+                            </table>
+                        </td>
+                        <td align="center">LIMIT 2, 0<br /><br />(Limit of 2; Skip none)</td>
+                        <td align="center">
+                            <table>
+                                <tr><td>9</td><td>3</td><td>0</td></tr>
+                                <tr><td>7</td><td>8</td><td>6</td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <table>
+                                <tr><td>9</td><td>3</td><td>0</td></tr>
+                                <tr><td>7</td><td>8</td><td>6</td></tr>
+                                <tr><td>2</td><td>0</td><td>5</td></tr>
+                                <tr><td>4</td><td>7</td><td>1</td></tr>
+                            </table>
+                        </td>
+                        <td align="center">LIMIT 999, 1<br /><br />(No limit; Skip 1)</td>
+                        <td align="center">
+                            <table>
+                                <tr><td>7</td><td>8</td><td>6</td></tr>
+                                <tr><td>2</td><td>0</td><td>5</td></tr>
+                                <tr><td>4</td><td>7</td><td>1</td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <table>
+                                <tr><td>9</td><td>3</td><td>0</td></tr>
+                                <tr><td>7</td><td>8</td><td>6</td></tr>
+                                <tr><td>2</td><td>0</td><td>5</td></tr>
+                                <tr><td>4</td><td>7</td><td>1</td></tr>
+                            </table>
+                        </td>
+                        <td align="center">LIMIT 1, 2<br /><br />(Limit of 1; Skip 2)</td>
+                        <td align="center">
+                            <table>
+                                <tr><td>2</td><td>0</td><td>5</td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
             </div>
-            <div class="page-footer relative-footer">Page 3 of 4</div>
+            <div class="page-footer relative-footer">Page 6 of 6</div>
         </div>
     </div>
 </body>

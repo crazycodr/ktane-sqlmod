@@ -25,6 +25,71 @@ public class SQLModule : ModuleScript
     bool isEditorMode = true;
 
     /// <summary>
+    /// Used as a  caching for KMSelectable component of self
+    /// </summary>
+    private KMSelectable selectableSelf;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh selection1Label;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh selection2Label;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh selection3Label;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh whereCombinationOperatorLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh where1LeftOperandLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh where1OperatorLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh where1RightOperandLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh where2LeftOperandLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh where2OperatorLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh where2RightOperandLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh limitSkipButtonLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh limitTakeButtonLabel;
+
+    /// <summary>
     /// Button used to switch from goal to editor
     /// </summary>
     public KMSelectable modeButton;
@@ -110,14 +175,14 @@ public class SQLModule : ModuleScript
     public KMSelectable where2RightOperandButton;
 
     /// <summary>
-    /// Label used for take limits
-    /// </summary>
-    public TextMesh limitTakeLabel;
-
-    /// <summary>
-    /// Label used for skip limits
+    /// Used as a caching for TextMesh label.
     /// </summary>
     public TextMesh limitSkipLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh label.
+    /// </summary>
+    public TextMesh limitTakeLabel;
 
     /// <summary>
     /// Button used to manage taken rows
@@ -189,29 +254,45 @@ public class SQLModule : ModuleScript
     /// </summary>
     void InitUI()
     {
-
         // Editor buttons, some are optional based on version of module
-        selection1Button.OnInteract += delegate () { OnPress(UIButtonEnum.Selection1); return false; };
-        selection2Button.OnInteract += delegate () { OnPress(UIButtonEnum.Selection2); return false; };
-        selection3Button.OnInteract += delegate () { OnPress(UIButtonEnum.Selection3); return false; };
-        if (selection1GroupButton) selection1GroupButton.OnInteract += delegate () { OnPress(UIButtonEnum.Selection1Group); return false; };
-        if (selection2GroupButton) selection2GroupButton.OnInteract += delegate () { OnPress(UIButtonEnum.Selection2Group); return false; };
-        if (selection3GroupButton) selection3GroupButton.OnInteract += delegate () { OnPress(UIButtonEnum.Selection3Group); return false; };
-        where1LeftOperandButton.OnInteract += delegate () { OnPress(UIButtonEnum.Where1Left); return false; };
-        where1OperatorButton.OnInteract += delegate () { OnPress(UIButtonEnum.Where1Op); return false; };
-        where1RightOperandButton.OnInteract += delegate () { OnPress(UIButtonEnum.Where1Right); return false; };
-        where2LeftOperandButton.OnInteract += delegate () { OnPress(UIButtonEnum.Where2Left); return false; };
-        where2OperatorButton.OnInteract += delegate () { OnPress(UIButtonEnum.Where2Op); return false; };
-        where2RightOperandButton.OnInteract += delegate () { OnPress(UIButtonEnum.Where2Right); return false; };
-        whereCombinationOperatorButton.OnInteract += delegate () { OnPress(UIButtonEnum.WhereOp); return false; };
-        limitTakeButton.OnInteract += delegate () { OnPress(UIButtonEnum.LimitTake); return false; };
-        limitSkipButton.OnInteract += delegate () { OnPress(UIButtonEnum.LimitSkip); return false; };
+        selection1Button.Assign(onInteract: () => OnPress(UIButtonEnum.Selection1));
+        selection2Button.Assign(onInteract: () => OnPress(UIButtonEnum.Selection2));
+        selection3Button.Assign(onInteract: () => OnPress(UIButtonEnum.Selection3));
+        if (selection1GroupButton) selection1GroupButton.Assign(onInteract: () => OnPress(UIButtonEnum.Selection1Group));
+        if (selection2GroupButton) selection2GroupButton.Assign(onInteract: () => OnPress(UIButtonEnum.Selection2Group));
+        if (selection3GroupButton) selection3GroupButton.Assign(onInteract: () => OnPress(UIButtonEnum.Selection3Group));
+        where1LeftOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Left));
+        where1OperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Op));
+        where1RightOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Right));
+        where2LeftOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Left));
+        where2OperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Op));
+        where2RightOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Right));
+        whereCombinationOperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.WhereOp));
+        limitTakeButton.Assign(onInteract: () => OnPress(UIButtonEnum.LimitTake));
+        limitSkipButton.Assign(onInteract: () => OnPress(UIButtonEnum.LimitSkip));
+
+        // Acquire reference to TextMeshes for better updates
+        selection1Label = selection1Button.GetComponentInChildren<TextMesh>();
+        selection2Label = selection2Button.GetComponentInChildren<TextMesh>();
+        selection3Label = selection3Button.GetComponentInChildren<TextMesh>();
+        whereCombinationOperatorLabel = whereCombinationOperatorButton.GetComponentInChildren<TextMesh>();
+        where1LeftOperandLabel = where1LeftOperandButton.GetComponentInChildren<TextMesh>();
+        where1OperatorLabel = where1OperatorButton.GetComponentInChildren<TextMesh>();
+        where1RightOperandLabel = where1RightOperandButton.GetComponentInChildren<TextMesh>();
+        where2LeftOperandLabel = where2LeftOperandButton.GetComponentInChildren<TextMesh>();
+        where2OperatorLabel = where2OperatorButton.GetComponentInChildren<TextMesh>();
+        where2RightOperandLabel = where2RightOperandButton.GetComponentInChildren<TextMesh>();
+        limitSkipButtonLabel = limitSkipButton.GetComponentInChildren<TextMesh>();
+        limitTakeButtonLabel = limitTakeButton.GetComponentInChildren<TextMesh>();
 
         // Mode button
         modeButton.OnInteract += OnModeChange;
 
         // Check button
         checkButton.OnInteract += OnCheck;
+
+        // Acquire selectableSelf for later use
+        selectableSelf = GetComponent<KMSelectable>();
     }
 
     /// <summary>
@@ -245,13 +326,11 @@ public class SQLModule : ModuleScript
         Log("Testing against goal: " + goal.ToString());
         if (goal.ToString() == result.ToString())
         {
-            Log("Module disarmed");
-            Solve();
+            Solve("Module disarmed");
         }
         else
         {
-            Log("Module striked due to dataset differences");
-            Strike();
+            Strike("Module striked due to dataset differences");
         }
 
         // Update the UI once this has hapenned
@@ -344,7 +423,7 @@ public class SQLModule : ModuleScript
         }
 
         // Play a sound on click
-        GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.SelectionTick, transform);
+        PlaySound(KMSoundOverride.SoundEffect.SelectionTick);
         
         // Process the button click
         switch (buttonPressed)
@@ -423,68 +502,55 @@ public class SQLModule : ModuleScript
     private void UpdateUI()
     {
 
-        // Test if we have a need for the selection buttons and update their state
-        if (query.selections.Count >= 1)
-        {
-            selection1Button.gameObject.SetActive(true);
-            selection1Button.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.selections[0].column);
-            if (selection1GroupButton) selection1GroupButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            selection1Button.gameObject.SetActive(false);
-            if (selection1GroupButton) selection1GroupButton.gameObject.SetActive(false);
-        }
-        if (query.selections.Count >= 2)
-        {
-            selection2Button.gameObject.SetActive(true);
-            selection2Button.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.selections[1].column);
-            if (selection2GroupButton) selection2GroupButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            selection2Button.gameObject.SetActive(false);
-            if (selection2GroupButton) selection2GroupButton.gameObject.SetActive(false);
-        }
-        if (query.selections.Count >= 3)
-        {
-            selection3Button.gameObject.SetActive(true);
-            selection3Button.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.selections[2].column);
-            if (selection3GroupButton) selection3GroupButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            selection3Button.gameObject.SetActive(false);
-            if (selection3GroupButton) selection3GroupButton.gameObject.SetActive(false);
-        }
+        // Selection 1 setup
+        selection1Label.text = ColumnEnumText(query.selections[0].column);
+        if (selection1GroupButton) selection1GroupButton.gameObject.SetActive(true);
 
-        // Show or hide the second filter
+        // Selection 2 setup
+        selection2Label.text = ColumnEnumText(query.selections[1].column);
+        if (selection2GroupButton) selection2GroupButton.gameObject.SetActive(true);
+
+        // Selection 3 setup
+        selection3Label.text = ColumnEnumText(query.selections[2].column);
+        if (selection3GroupButton) selection3GroupButton.gameObject.SetActive(true);
+
+        // Show or hide the second filter, adjust selectableSelf children as needed
         where2LeftOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
         where2OperatorButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
         where2RightOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
+        if (query.filter.op != DataRowFilterOperatorEnum.OperatorNone)
+        {
+            selectableSelf.Children[12] = whereCombinationOperatorButton;
+            selectableSelf.Children[13] = where2LeftOperandButton;
+            selectableSelf.Children[14] = where2OperatorButton;
+            selectableSelf.Children[15] = where2RightOperandButton;
+            selectableSelf.UpdateChildren();
+        }
+        else
+        {
+            selectableSelf.Children[12] = whereCombinationOperatorButton;
+            selectableSelf.Children[13] = null;
+            selectableSelf.Children[14] = null;
+            selectableSelf.Children[15] = null;
+            selectableSelf.UpdateChildren();
+        }
 
         // Update the where combination label
-        whereCombinationOperatorButton.GetComponentInChildren<TextMesh>().text = FilterEnumText(query.filter.op);
+        whereCombinationOperatorLabel.text = FilterEnumText(query.filter.op);
 
         // Adjust the filter 1 data
-        where1LeftOperandButton.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.filter.leftOperandFilter.leftOperandColumn);
-        where1OperatorButton.GetComponentInChildren<TextMesh>().text = FilterEnumText(query.filter.leftOperandFilter.op);
-        where1RightOperandButton.GetComponentInChildren<TextMesh>().text = query.filter.leftOperandFilter.rightOperandValue.ToString();
+        where1LeftOperandLabel.text = ColumnEnumText(query.filter.leftOperandFilter.leftOperandColumn);
+        where1OperatorLabel.text = FilterEnumText(query.filter.leftOperandFilter.op);
+        where1RightOperandLabel.text = query.filter.leftOperandFilter.rightOperandValue.ToString();
 
         // Adjust the filter 2 data
-        where2LeftOperandButton.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
-        where2OperatorButton.GetComponentInChildren<TextMesh>().text = FilterEnumText(query.filter.rightOperandFilter.op);
-        where2RightOperandButton.GetComponentInChildren<TextMesh>().text = query.filter.rightOperandFilter.rightOperandValue.ToString();
-
-        // Adjust limits
-        where2LeftOperandButton.GetComponentInChildren<TextMesh>().text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
-        where2OperatorButton.GetComponentInChildren<TextMesh>().text = FilterEnumText(query.filter.rightOperandFilter.op);
-        where2RightOperandButton.GetComponentInChildren<TextMesh>().text = query.filter.rightOperandFilter.rightOperandValue.ToString();
+        where2LeftOperandLabel.text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
+        where2OperatorLabel.text = FilterEnumText(query.filter.rightOperandFilter.op);
+        where2RightOperandLabel.text = query.filter.rightOperandFilter.rightOperandValue.ToString();
 
         // Adjust the limit labels
-        limitSkipButton.GetComponentInChildren<TextMesh>().text = query.limits.linesSkiped == 0 ? "None" : query.limits.linesSkiped.ToString();
-        limitTakeButton.GetComponentInChildren<TextMesh>().text = query.limits.linesTaken == 0 ? "All" : query.limits.linesTaken.ToString();
-
+        limitSkipButtonLabel.text = query.limits.linesSkiped == 0 ? "None" : query.limits.linesSkiped.ToString();
+        limitTakeButtonLabel.text = query.limits.linesTaken == 0 ? "All" : query.limits.linesTaken.ToString();
     }
 
     /// <summary>

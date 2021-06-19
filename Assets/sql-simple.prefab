@@ -5252,7 +5252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114137908014026452
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5339,7 +5339,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114248160281045770
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5352,7 +5352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114253560421822236
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5365,7 +5365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114266198595743286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5540,7 +5540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114423056187113252
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5592,7 +5592,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114462251875396150
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5824,7 +5824,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114655286432816020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6088,7 +6088,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114860102522151234
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6141,8 +6141,8 @@ MonoBehaviour:
   where2LeftOperandButton: {fileID: 114946703428307944}
   where2OperatorButton: {fileID: 114941495745566606}
   where2RightOperandButton: {fileID: 114293971742544434}
-  limitTakeLabel: {fileID: 102519299931133948}
   limitSkipLabel: {fileID: 102901643170449650}
+  limitTakeLabel: {fileID: 102519299931133948}
   limitTakeButton: {fileID: 114658509193450816}
   limitSkipButton: {fileID: 114685528963558696}
   goalLabels:
@@ -6186,7 +6186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114915208506700664
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6215,20 +6215,26 @@ MonoBehaviour:
   Children:
   - {fileID: 114751872558224870}
   - {fileID: 114360303943966360}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 114805819754214740}
   - {fileID: 114124241966780098}
   - {fileID: 114976439478374848}
+  - {fileID: 0}
   - {fileID: 114155753833889758}
   - {fileID: 114994734460230092}
   - {fileID: 114026658634466900}
+  - {fileID: 0}
   - {fileID: 114807134304649192}
-  - {fileID: 114946703428307944}
-  - {fileID: 114941495745566606}
-  - {fileID: 114293971742544434}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 114658509193450816}
   - {fileID: 114685528963558696}
+  - {fileID: 0}
+  - {fileID: 0}
   IsPassThrough: 0
-  ChildRowLength: 1
+  ChildRowLength: 4
   Highlight: {fileID: 114941497612989584}
   SelectableColliders: []
   DefaultSelectableIndex: 0
@@ -6261,7 +6267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114936580322820374
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6357,7 +6363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114966475216687774
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6457,7 +6463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - KT/Mobile/DiffuseTint
+  - Legacy Shaders/Diffuse
 --- !u!114 &114994734460230092
 MonoBehaviour:
   m_ObjectHideFlags: 1
