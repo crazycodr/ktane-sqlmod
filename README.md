@@ -1,20 +1,17 @@
-Community fork of the KTaNE Modkit.
+# Official KTANE - SQL modules repository
 
-The [original (official) modkit](https://github.com/keeptalkinggame/ktanemodkit) isn't going to receive updates anymore. This is the fork that will be maintained from now on.
+This repository hosts a SQL code simulator for KTANE. To disarm it, produce a SQL query that outputs a given result. The input data is in the document of the module, use it to reproduce the given result.
 
-On this branch, community-made modding features are added to the modkit.
+## Versions
 
-A modkit with only the base features can be found on the [base_fatures branch](https://github.com/qkrisi/ktanemodkit/tree/base_features).
+There are 3 versions for this module:
 
-[Documentation](https://github.com/Qkrisi/ktanemodkit/wiki)
+- Basic: Create a simple SELECT query with filters and limits
+- Evil: Create a more complex SELECT query using aggregates and group by clauses but no filters
+- Cruel: Create a complex SELECT query using filters, aggregates, group by clauses at the same time
 
-To get more help, join the [Keep Talking and Nobody Explodes](https://discord.gg/ktane) or the [KTaNE Modding](https://discord.gg/qzy7Gdz) Discord servers.
+## Author and contributors
 
-Community features added:
-```
--Multiple Bombs Mission Editor (By Lupo511)
--DMG Mission Editor (By ZekNikZ)
--KeepCoding (By Emik)
--KTaNE Utilities (By samfundev)
--KTaNE Module Utils (By Qkrisi)
-```
+- **Author**: Mathieu Dumoulin aka TheCrazyCodr
+- **Documentation contributor**: Timwi
+- **Design contributor**: Mirage-Xel
