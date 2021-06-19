@@ -69,10 +69,10 @@
                 <h2>On the Subject of SQL - Basic</h2>
                 <p class="flavour-text">How fun is it to ride through a large table of numbers to find similarities...</p>
 
-                <p>This module is a SQL code simulator that you have to defuse by producing the proper SQL query. You have an input data in this document and the module allows you to see a goal that you must reproduce. Use the documentation to build a SQL query that will reproduce the expected solution from the input data.</p>
+                <p>This module is a SQL code simulator. To disarm it, produce a SQL query that outputs a given result. The input data is in this document, which the module displays the goal result that must be reproduced. Use the documentation to build a SQL query that will reproduce the expected result from the input data.</p>
 
-                <h2>The goal button</h2>
-                <p>Press on the <strong>Goal</strong> button to show you what is expected by the module. The expectation is a matrix of numbers. The result can be from 1 to 4 rows by 2 to 3 columns. Here are a few example <strong>but definitely not limited to</strong>:</p>
+                <h2>The Goal button</h2>
+                <p>Press the <strong>Goal</strong> button to see what results the module expects. The expectation is a table of numbers with anywhere from 1 to 4 rows and 2 to 3 columns. Below are a few examples:</p>
 
                 <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
                     <table style="align-self: flex-start;">
@@ -94,14 +94,10 @@
                         <tr><td>2</td><td>9</td><td>6</td></tr>
                     </table>
                 </div>
-                <p>&nbsp;</p>
 
-                <h2>The check button</h2>
+                <h2 style='margin-top: 2cm;'>The Check button</h2>
 
-                <p>Pressing on the <strong>Check</strong> button tries to solve the module. When you press on <strong>check</strong>, the module compiles the SQL query and applies it on the input data. The result is compared to the goal matrix and you either get a strike or a solve depending if you found the proper SQL.</p>
-
-                <blockquote><strong>Note:</strong> The crafted SQL doesn't need to be the one used to generate the goal matrix, as long as it generates the same result it's fine.</blockquote>
-
+                <p>Upon pressing the <strong>Check</strong> button, the module compiles the SQL query and executes it against the input data. The result is compared to the goal table. If it matches, the module is disarmed; otherwise, a strike is registered.</p>
             </div>
             <div class="page-footer relative-footer">Page 1 of 6</div>
         </div>
@@ -112,9 +108,9 @@
             </div>
             <div class="page-content">
 
-                <h2>Solving the module</h2>
+                <h2>Disarming the module</h2>
 
-                <p>To solve the module, you have to find the numbers from the goal matrix in the input data. The rows are always from top to bottom, you'll see why later, but the columns can be in any order. Example:</p>
+                <p>To disarm the module, find the numbers from the goal table in the input data. The rows are always from top to bottom, but the columns can be reordered. Example:</p>
 
                 <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
                     <div>
@@ -176,10 +172,9 @@
                         </table>
                     </div>
                 </div>
-                <p>&nbsp;</p>
 
-                <h2>The input data</h2>
-                <p>The real input data that you must use as an input to solve the module is this one. You must find the values from the goal matrix inside this table and craft the proper SQL query to generate the same output.</p>
+                <h2 style='margin-top: 2cm;'>The input data</h2>
+                <p>The input data used to disarm the module is shown below. Find the values from the goal table inside this table and craft a SQL query that generates the same output.</p>
 
                 <div style="display:flex; flex-direction: row; justify-content: space-around; align-content: center;">
                     <table>
@@ -203,7 +198,8 @@
 
                     <blockquote style="flex-basis: 50%;">
                         <p><strong>Remember:</strong></p>
-                        <p>SQL results are not necessarily in reading order, it will be <strong>from top to bottom</strong> but you can <strong>SELECT</strong> any column you wish in any order.</p></blockquote>
+                        <p>SQL results are not necessarily in reading order. The <strong>rows</strong> will be from top to bottom, but the <strong>columns</strong> can be arbitrarily reordered in the SELECT clause in the query.</p>
+                    </blockquote>
                 </div>
             </div>
             <div class="page-footer relative-footer">Page 2 of 6</div>
@@ -215,23 +211,21 @@
             </div>
             <div class="page-content">
 
-                <h2>On the subject of SQL</h2>
-                <p>SQL is a programming language that describes how to manipulate sources of data and generate a difference output source. It is comprised of many different keywords, only a minimal list is used in this module.</p>
+                <h2>On the Subject of SQL</h2>
+                <p>SQL is a query language that describes how to manipulate sources of data and generate a result. It comprises many different keywords, only a small subset of which is used by this module.</p>
 
                 <h3>How SQL is processed</h3>
-                <p>SQL is processed always in the same way:<p>
-                <p>
-                    <ol>
-                        <li style="margin-bottom: 1em">Each row is compared against the filters. If a row complies with the filter expression it is kept for further processing. (See <strong>WHERE</strong> clauses below for more information)</li>
+                <p>SQL is processed as follows:<p>
+                <ol>
+                    <li style="margin-bottom: 1em">Each row is compared against the <strong>WHERE</strong> clause (described below). If a row complies with the WHERE clause, it is kept for further processing.</li>
 
-                        <li style="margin-bottom: 1em">Each row that passes the filter expression is then processed against the selection expressions. (See <strong>SELECT</strong> clauses below for more information)</li>
+                    <li style="margin-bottom: 1em">Each row that passes the WHERE clause is then processed against the <strong>SELECT</strong> clause (described below).</li>
 
-                        <li style="margin-bottom: 1em">Finaly, each row of the end result is processed against the LIMIT clause; that is <strong>SKIP</strong> X amount of rows from the result and then <strong>TAKE</strong> only Y lines after that. (See <strong>LIMIT</strong> clauses below for more information)</li>
-                    </ol>
-                </p>
+                    <li style="margin-bottom: 1em">Finally, the <strong>LIMIT</strong> clause (described below) can be used to discard a certain number of rows by skipping the first X rows from the result and then taking the next Y lines after that.</li>
+                </ol>
 
                 <h3>SELECT X, Y, Z</h3>
-                <p>When you <strong>SELECT</strong> something, you choose to take all the values that match this X, Y or Z expression and return it. The module offers 3 possible return expressions and they are always simple column references. You must click to select each column to return, you can select between A and G or disable the selection when it shows a "-". Here's an example of how it works:</p>
+                <p>The <strong>SELECT</strong> clause chooses which columns to return (and in what order). The module offers up to 3 simple column references. Each column can be clicked to cycle between columns A to G and a “-” which disables that selection. An example of this follows:</p>
 
                 <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
                     <table>
@@ -254,7 +248,7 @@
                     </table>
                     <div style="align-self: center; flex-basis: 33%;">
                         <p><strong>SQL:</strong> SELECT D, A</p>
-                        <p>Notice there are no 3<sup>rd</sup> expression. We used a "-".</p>
+                        <p>Notice there is no 3<sup>rd</sup> expression. We used a “-”.</p>
                         <div class="arrow">
                             <div class="line"></div>
                             <div class="point"></div>
@@ -285,18 +279,18 @@
             <div class="page-content">
 
                 <h3>WHERE X operation Y</h3>
-                <p><strong>WHERE</strong> introduces filters and all rows will be tested against the conditions you provide the module with. A row is kept in the output only if it complies with the filter condition. This SQL emulator makes it simple for you, you can only compare columns to fixed values such as: A < 2, C = 3, F >= 5. The possible operators are all simple mathematical operators that you already know (In most cases) such as:</p>
+                <p><strong>WHERE</strong> introduces “filters”. The rows are tested against the condition. A row is kept in the output only if it complies with the filter condition. In this simple SQL emulator, only comparisons of columns to fixed values are possible, such as: A&nbsp;&lt;&nbsp;2, C&nbsp;=&nbsp;3, F&nbsp;&gt;=&nbsp;5. The possible operators are simple, familiar mathematical operators such as:</p>
                 <p>
                     <ul>
-                        <li>Equals or "="</li>
-                        <li>Not equals or "&lt;&gt;"</li>
-                        <li>Less than or "<"</li>
-                        <li>Less than or equal or "<="</li>
-                        <li>Greather than or ">"</li>
-                        <li>Greather than or equal or ">="</li>
+                        <li>“=”: Equals</li>
+                        <li>“&lt;&gt;”: Not equals</li>
+                        <li>“&lt;”: Less than</li>
+                        <li>“&lt;=”: Less than or equal to</li>
+                        <li>“&gt;”: Greather than</li>
+                        <li>“&gt;=”: Greather than or equal to</li>
                     </ul>
                 </p>
-                <p>Here's a basic example of a single filter:</p>
+                <p>A basic example of a single filter follows:</p>
 
                 <div style="display: flex; flex-direction: row; justify-content: space-around; align-content: flex-start;">
                     <table>
@@ -318,7 +312,7 @@
                         <tr><td>8</td><td>5</td><td>4</td><td>3</td><td>1</td><td>8</td><td>2</td></tr>
                     </table>
                     <div style="align-self: center">
-                        <p><strong>SQL:</strong> WHERE C >= 5</p>
+                        <p><strong>SQL:</strong> WHERE C &gt;= 5</p>
                         <div class="arrow">
                             <div class="line"></div>
                             <div class="point"></div>
@@ -354,7 +348,7 @@
 
                 <h3>WHERE X AND/OR Y</h3>
 
-                <p>If you think you need 2 conditions to achieve the result, click on the button below the <strong>WHERE</strong> label to introduce a 2<sup>nd</sup> filter. You can choose between <strong>AND</strong> and <strong>OR</strong> to connect the two filters. <strong>AND</strong> means both conditions must pass to keep the row, <strong>OR</strong> means at least one condition must pass to keep the row. Examples:</p>
+                <p>If two conditions are required to achieve the result, click on the button below the <strong>WHERE</strong> label to add a 2<sup>nd</sup> filter. The two filters can be connected using <strong>AND</strong> (both conditions must pass to keep the row) or <strong>OR</strong> (at least one condition must pass to keep the row). Examples:</p>
 
                 <table width="100%">
                     <tr>
@@ -436,13 +430,14 @@
             <div class="page-content">
 
                 <h3>LIMIT X, Y</h3>
-                <p><strong>LIMIT</strong> comes with one or two values. For simplicity, the SQL module splits them for you in two selectors:</p>
-                <p>
-                    <ul>
-                        <li style="margin-bottom: 1em"><strong>LIMIT</strong>: Indicates the number of rows to keep from the matching results after applying conditions. If you select "All", no rows are discarded.</li>
-                        <li style="margin-bottom: 1em"><strong>SKIP</strong>: Indicates the number of rows to skip after applying conditions. If you select "None", no rows are discarded.</li>
-                    </ul>
-                 Examples:</p>
+                <p><strong>LIMIT</strong> is followed by two values:</p>
+                <ul>
+                    <li style="margin-bottom: 1em">First value: indicates the maximum number of rows to keep after applying conditions. If you select “All”, no rows are discarded.</li>
+                    <li style="margin-bottom: 1em">Second value: indicates the number of rows to skip after applying conditions. If you select “None”, no rows are discarded.</li>
+                </ul>
+                <p>Note that the second value (the skip) is applied first by skipping that number of rows from the top of the results. Afterwards, the first value is applied to return a maximum of that many rows.</p>
+
+                <p>Examples:</p>
 
                 <table width="100%">
                     <tr>
@@ -459,7 +454,7 @@
                                 <tr><td>4</td><td>7</td><td>1</td></tr>
                             </table>
                         </td>
-                        <td align="center">LIMIT 2, 0<br /><br />(Limit of 2; Skip none)</td>
+                        <td align="center">LIMIT 2, 0<br /><br />(Limit of 2; skip none)</td>
                         <td align="center">
                             <table>
                                 <tr><td>9</td><td>3</td><td>0</td></tr>
@@ -476,7 +471,7 @@
                                 <tr><td>4</td><td>7</td><td>1</td></tr>
                             </table>
                         </td>
-                        <td align="center">LIMIT 999, 1<br /><br />(No limit; Skip 1)</td>
+                        <td align="center">LIMIT 999, 1<br /><br />(No limit; skip 1)</td>
                         <td align="center">
                             <table>
                                 <tr><td>7</td><td>8</td><td>6</td></tr>
@@ -494,7 +489,7 @@
                                 <tr><td>4</td><td>7</td><td>1</td></tr>
                             </table>
                         </td>
-                        <td align="center">LIMIT 1, 2<br /><br />(Limit of 1; Skip 2)</td>
+                        <td align="center">LIMIT 1, 2<br /><br />(Limit of 1; skip 2)</td>
                         <td align="center">
                             <table>
                                 <tr><td>2</td><td>0</td><td>5</td></tr>
