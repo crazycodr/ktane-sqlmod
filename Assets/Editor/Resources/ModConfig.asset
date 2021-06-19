@@ -14,8 +14,8 @@ MonoBehaviour:
   id: simple-sql
   title: SQL
   author: TheCrazyCodr
-  description: Try to solve an SQL Query from a random datasource with the help of
+  description: Try to create an SQL Query from an expected result with the help of
     your expert.
   version: 0.0.1
   outputFolder: build
-  previewImage: {fileID: 0}
+  previewImage: {fileID: 2800000, guid: 97e132f05f2add94397bd3890f1608a8, type: 3}
