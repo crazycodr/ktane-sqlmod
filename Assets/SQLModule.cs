@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class SQLModule : ModuleScript
 {
+
+    /// <summary>
+    /// Represent the module's difficulty, changes different things that can happen
+    /// </summary>
+    public SqlModuleDifficultyEnum difficulty = SqlModuleDifficultyEnum.Basic;
+
     /// <summary>
     /// Data set source used by the module
     /// </summary>
@@ -47,6 +53,21 @@ public class SQLModule : ModuleScript
     /// <summary>
     /// Used as a caching for TextMesh of a button.
     /// </summary>
+    private TextMesh selection1GroupButtonLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh selection2GroupButtonLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh selection3GroupButtonLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
     private TextMesh whereCombinationOperatorLabel;
 
     /// <summary>
@@ -78,6 +99,11 @@ public class SQLModule : ModuleScript
     /// Used as a caching for TextMesh of a button.
     /// </summary>
     private TextMesh where2RightOperandLabel;
+
+    /// <summary>
+    /// Used as a caching for TextMesh of a button.
+    /// </summary>
+    private TextMesh groupBy1ButtonLabel;
 
     /// <summary>
     /// Used as a caching for TextMesh of a button.
@@ -177,6 +203,16 @@ public class SQLModule : ModuleScript
     /// <summary>
     /// Used as a caching for TextMesh label.
     /// </summary>
+    public TextMesh groupByLabel;
+
+    /// <summary>
+    /// Button used to manage group by 1 operand
+    /// </summary>
+    public KMSelectable groupBy1Button;
+
+    /// <summary>
+    /// Used as a caching for TextMesh label.
+    /// </summary>
     public TextMesh limitSkipLabel;
 
     /// <summary>
@@ -216,15 +252,16 @@ public class SQLModule : ModuleScript
     {
 
         // For now, use the 1st and only dataset matrix #1
-        Log("Data source set to 1");
-        source = DataSetFactory.FromIntMatrix(DataSetFactory.dataSetMatrix1);
+        Log("Loading datasource for difficulty: " + difficulty.ToString());
+        source = DataSetFactory.FromDifficulty(difficulty);
         Log("Source set to: " + source.ToString());
 
         // Generate a goal
         Log("Generating target query");
-        DataQuery targetQuery = DataQueryGenerator.GenerateSimple(source);
+        DataQuery targetQuery = DataQueryGenerator.GenerateFromDifficulty(difficulty, source);
         Log("Target query is: " + targetQuery.ToString());
         goal = targetQuery.Apply(source);
+        Log("Goal is: " + goal.ToString());
 
         // Push the data of the goal into the goal labels
         int goalLabelIndex = 0;
@@ -241,11 +278,14 @@ public class SQLModule : ModuleScript
         query.selections.Add(new DataQuerySelection(DataRowColumnEnum.ColumnA));
         query.selections.Add(new DataQuerySelection(DataRowColumnEnum.ColumnB));
         query.selections.Add(new DataQuerySelection(DataRowColumnEnum.ColumnC));
-        query.filter = new DataQueryFilter(
-            new DataQueryFilter(DataRowColumnEnum.ColumnA, DataRowFilterOperatorEnum.OperatorEqual, 0),
-            DataRowFilterOperatorEnum.OperatorNone,
-            new DataQueryFilter(DataRowColumnEnum.ColumnA, DataRowFilterOperatorEnum.OperatorEqual, 0)
-        );
+        if (difficulty == SqlModuleDifficultyEnum.Basic)
+        {
+            query.filter = new DataQueryFilter(
+                new DataQueryFilter(DataRowColumnEnum.ColumnA, DataRowFilterOperatorEnum.OperatorEqual, 0),
+                DataRowFilterOperatorEnum.OperatorNone,
+                new DataQueryFilter(DataRowColumnEnum.ColumnA, DataRowFilterOperatorEnum.OperatorEqual, 0)
+            );
+        }
 
     }
 
@@ -261,29 +301,34 @@ public class SQLModule : ModuleScript
         if (selection1GroupButton) selection1GroupButton.Assign(onInteract: () => OnPress(UIButtonEnum.Selection1Group));
         if (selection2GroupButton) selection2GroupButton.Assign(onInteract: () => OnPress(UIButtonEnum.Selection2Group));
         if (selection3GroupButton) selection3GroupButton.Assign(onInteract: () => OnPress(UIButtonEnum.Selection3Group));
-        where1LeftOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Left));
-        where1OperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Op));
-        where1RightOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Right));
-        where2LeftOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Left));
-        where2OperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Op));
-        where2RightOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Right));
-        whereCombinationOperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.WhereOp));
-        limitTakeButton.Assign(onInteract: () => OnPress(UIButtonEnum.LimitTake));
-        limitSkipButton.Assign(onInteract: () => OnPress(UIButtonEnum.LimitSkip));
+        if (where1LeftOperandButton) where1LeftOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Left));
+        if (where1OperatorButton) where1OperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Op));
+        if (where1RightOperandButton) where1RightOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where1Right));
+        if (where2LeftOperandButton) where2LeftOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Left));
+        if (where2OperatorButton) where2OperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Op));
+        if (where2RightOperandButton) where2RightOperandButton.Assign(onInteract: () => OnPress(UIButtonEnum.Where2Right));
+        if (whereCombinationOperatorButton) whereCombinationOperatorButton.Assign(onInteract: () => OnPress(UIButtonEnum.WhereOp));
+        if (groupBy1Button) groupBy1Button.Assign(onInteract: () => OnPress(UIButtonEnum.GroupBy1));
+        if (limitTakeButton) limitTakeButton.Assign(onInteract: () => OnPress(UIButtonEnum.LimitTake));
+        if (limitSkipButton) limitSkipButton.Assign(onInteract: () => OnPress(UIButtonEnum.LimitSkip));
 
         // Acquire reference to TextMeshes for better updates
         selection1Label = selection1Button.GetComponentInChildren<TextMesh>();
         selection2Label = selection2Button.GetComponentInChildren<TextMesh>();
         selection3Label = selection3Button.GetComponentInChildren<TextMesh>();
-        whereCombinationOperatorLabel = whereCombinationOperatorButton.GetComponentInChildren<TextMesh>();
-        where1LeftOperandLabel = where1LeftOperandButton.GetComponentInChildren<TextMesh>();
-        where1OperatorLabel = where1OperatorButton.GetComponentInChildren<TextMesh>();
-        where1RightOperandLabel = where1RightOperandButton.GetComponentInChildren<TextMesh>();
-        where2LeftOperandLabel = where2LeftOperandButton.GetComponentInChildren<TextMesh>();
-        where2OperatorLabel = where2OperatorButton.GetComponentInChildren<TextMesh>();
-        where2RightOperandLabel = where2RightOperandButton.GetComponentInChildren<TextMesh>();
-        limitSkipButtonLabel = limitSkipButton.GetComponentInChildren<TextMesh>();
-        limitTakeButtonLabel = limitTakeButton.GetComponentInChildren<TextMesh>();
+        if (selection1GroupButton) selection1GroupButtonLabel = selection1GroupButton.GetComponentInChildren<TextMesh>();
+        if (selection2GroupButton) selection2GroupButtonLabel = selection2GroupButton.GetComponentInChildren<TextMesh>();
+        if (selection3GroupButton) selection3GroupButtonLabel = selection3GroupButton.GetComponentInChildren<TextMesh>();
+        if (whereCombinationOperatorButton) whereCombinationOperatorLabel = whereCombinationOperatorButton.GetComponentInChildren<TextMesh>();
+        if (where1LeftOperandButton) where1LeftOperandLabel = where1LeftOperandButton.GetComponentInChildren<TextMesh>();
+        if (where1OperatorButton) where1OperatorLabel = where1OperatorButton.GetComponentInChildren<TextMesh>();
+        if (where1RightOperandButton) where1RightOperandLabel = where1RightOperandButton.GetComponentInChildren<TextMesh>();
+        if (where2LeftOperandButton) where2LeftOperandLabel = where2LeftOperandButton.GetComponentInChildren<TextMesh>();
+        if (where2OperatorButton) where2OperatorLabel = where2OperatorButton.GetComponentInChildren<TextMesh>();
+        if (where2RightOperandButton) where2RightOperandLabel = where2RightOperandButton.GetComponentInChildren<TextMesh>();
+        if (groupBy1Button) groupBy1ButtonLabel = groupBy1Button.GetComponentInChildren<TextMesh>();
+        if (limitSkipButton) limitSkipButtonLabel = limitSkipButton.GetComponentInChildren<TextMesh>();
+        if (limitTakeButton) limitTakeButtonLabel = limitTakeButton.GetComponentInChildren<TextMesh>();
 
         // Mode button
         modeButton.OnInteract += OnModeChange;
@@ -315,7 +360,7 @@ public class SQLModule : ModuleScript
         }
 
         // Play a sound on click
-        GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+        PlaySound(KMSoundOverride.SoundEffect.ButtonPress);
 
         // Generate a result from query and source
         Log("Applying query on source: " + query.ToString());
@@ -326,6 +371,7 @@ public class SQLModule : ModuleScript
         Log("Testing against goal: " + goal.ToString());
         if (goal.ToString() == result.ToString())
         {
+            PlaySound(KMSoundOverride.SoundEffect.CorrectChime);
             Solve("Module disarmed");
         }
         else
@@ -353,7 +399,7 @@ public class SQLModule : ModuleScript
         }
 
         // Play a sound on click
-        GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+        PlaySound(KMSoundOverride.SoundEffect.ButtonPress);
 
         // Switch the mode
         isEditorMode = !isEditorMode;
@@ -372,20 +418,24 @@ public class SQLModule : ModuleScript
         if (selection3GroupButton) selection3GroupButton.gameObject.SetActive(isEditorMode);
 
         // Next, the filter components
-        whereLabel.gameObject.SetActive(isEditorMode);
-        where1LeftOperandButton.gameObject.SetActive(isEditorMode);
-        where1OperatorButton.gameObject.SetActive(isEditorMode);
-        where1RightOperandButton.gameObject.SetActive(isEditorMode);
-        where2LeftOperandButton.gameObject.SetActive(isEditorMode);
-        where2OperatorButton.gameObject.SetActive(isEditorMode);
-        where2RightOperandButton.gameObject.SetActive(isEditorMode);
-        whereCombinationOperatorButton.gameObject.SetActive(isEditorMode);
+        if (whereLabel) whereLabel.gameObject.SetActive(isEditorMode);
+        if (where1LeftOperandButton) where1LeftOperandButton.gameObject.SetActive(isEditorMode);
+        if (where1OperatorButton) where1OperatorButton.gameObject.SetActive(isEditorMode);
+        if (where1RightOperandButton) where1RightOperandButton.gameObject.SetActive(isEditorMode);
+        if (where2LeftOperandButton) where2LeftOperandButton.gameObject.SetActive(isEditorMode);
+        if (where2OperatorButton) where2OperatorButton.gameObject.SetActive(isEditorMode);
+        if (where2RightOperandButton) where2RightOperandButton.gameObject.SetActive(isEditorMode);
+        if (whereCombinationOperatorButton) whereCombinationOperatorButton.gameObject.SetActive(isEditorMode);
 
-        // Finaly, the limitation components
-        limitSkipLabel.gameObject.SetActive(isEditorMode);
-        limitSkipButton.gameObject.SetActive(isEditorMode);
-        limitTakeLabel.gameObject.SetActive(isEditorMode);
-        limitTakeButton.gameObject.SetActive(isEditorMode);
+        // Next, the group by components
+        if (groupByLabel) groupByLabel.gameObject.SetActive(isEditorMode);
+        if (groupBy1Button) groupBy1Button.gameObject.SetActive(isEditorMode);
+
+        // Finally, the limitation components
+        if (limitSkipLabel) limitSkipLabel.gameObject.SetActive(isEditorMode);
+        if (limitSkipButton) limitSkipButton.gameObject.SetActive(isEditorMode);
+        if (limitTakeLabel) limitTakeLabel.gameObject.SetActive(isEditorMode);
+        if (limitTakeButton) limitTakeButton.gameObject.SetActive(isEditorMode);
 
         // Hide/Show all applicable items for the goal
         foreach (GameObject goalLabel in goalLabels)
@@ -475,6 +525,9 @@ public class SQLModule : ModuleScript
             case UIButtonEnum.WhereOp:
                 query.filter.op = NextCombinationFilterEnum(query.filter.op);
                 break;
+            case UIButtonEnum.GroupBy1:
+                query.groupby.column = NextColumnEnum(query.groupby.column);
+                break;
             case UIButtonEnum.LimitSkip:
                 query.limits.linesSkiped += 1;
                 if (query.limits.linesSkiped > 9)
@@ -504,53 +557,71 @@ public class SQLModule : ModuleScript
 
         // Selection 1 setup
         selection1Label.text = ColumnEnumText(query.selections[0].column);
-        if (selection1GroupButton) selection1GroupButton.gameObject.SetActive(true);
+        if (selection1GroupButtonLabel)
+        {
+            selection1GroupButtonLabel.text = AggregatorEnumText(query.selections[0].aggregator);
+            selection1GroupButtonLabel.color = query.selections[0].aggregator == DataQueryAggregatorEnum.None ? Color.gray : Color.black;
+        }
 
         // Selection 2 setup
         selection2Label.text = ColumnEnumText(query.selections[1].column);
-        if (selection2GroupButton) selection2GroupButton.gameObject.SetActive(true);
+        if (selection2GroupButtonLabel)
+        {
+            selection2GroupButtonLabel.text = AggregatorEnumText(query.selections[1].aggregator);
+            selection2GroupButtonLabel.color = query.selections[1].aggregator == DataQueryAggregatorEnum.None ? Color.gray : Color.black;
+        }
 
         // Selection 3 setup
         selection3Label.text = ColumnEnumText(query.selections[2].column);
-        if (selection3GroupButton) selection3GroupButton.gameObject.SetActive(true);
+        if (selection3GroupButtonLabel)
+        {
+            selection3GroupButtonLabel.text = AggregatorEnumText(query.selections[2].aggregator);
+            selection3GroupButtonLabel.color = query.selections[2].aggregator == DataQueryAggregatorEnum.None ? Color.gray : Color.black;
+        }
 
         // Show or hide the second filter, adjust selectableSelf children as needed
-        where2LeftOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
-        where2OperatorButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
-        where2RightOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
-        if (query.filter.op != DataRowFilterOperatorEnum.OperatorNone)
+        if (where2LeftOperandButton && where2OperatorButton && where2RightOperandButton && whereCombinationOperatorButton)
         {
-            selectableSelf.Children[12] = whereCombinationOperatorButton;
-            selectableSelf.Children[13] = where2LeftOperandButton;
-            selectableSelf.Children[14] = where2OperatorButton;
-            selectableSelf.Children[15] = where2RightOperandButton;
-            selectableSelf.UpdateChildren();
-        }
-        else
-        {
-            selectableSelf.Children[12] = whereCombinationOperatorButton;
-            selectableSelf.Children[13] = null;
-            selectableSelf.Children[14] = null;
-            selectableSelf.Children[15] = null;
-            selectableSelf.UpdateChildren();
+            where2LeftOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
+            where2OperatorButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
+            where2RightOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
+            if (query.filter.op != DataRowFilterOperatorEnum.OperatorNone)
+            {
+                selectableSelf.Children[12] = whereCombinationOperatorButton;
+                selectableSelf.Children[13] = where2LeftOperandButton;
+                selectableSelf.Children[14] = where2OperatorButton;
+                selectableSelf.Children[15] = where2RightOperandButton;
+                selectableSelf.UpdateChildren();
+            }
+            else
+            {
+                selectableSelf.Children[12] = whereCombinationOperatorButton;
+                selectableSelf.Children[13] = null;
+                selectableSelf.Children[14] = null;
+                selectableSelf.Children[15] = null;
+                selectableSelf.UpdateChildren();
+            }
         }
 
         // Update the where combination label
-        whereCombinationOperatorLabel.text = FilterEnumText(query.filter.op);
+        if (whereCombinationOperatorLabel) whereCombinationOperatorLabel.text = FilterEnumText(query.filter.op);
 
         // Adjust the filter 1 data
-        where1LeftOperandLabel.text = ColumnEnumText(query.filter.leftOperandFilter.leftOperandColumn);
-        where1OperatorLabel.text = FilterEnumText(query.filter.leftOperandFilter.op);
-        where1RightOperandLabel.text = query.filter.leftOperandFilter.rightOperandValue.ToString();
+        if (where1LeftOperandLabel) where1LeftOperandLabel.text = ColumnEnumText(query.filter.leftOperandFilter.leftOperandColumn);
+        if (where1OperatorLabel) where1OperatorLabel.text = FilterEnumText(query.filter.leftOperandFilter.op);
+        if (where1RightOperandLabel) where1RightOperandLabel.text = query.filter.leftOperandFilter.rightOperandValue.ToString();
 
         // Adjust the filter 2 data
-        where2LeftOperandLabel.text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
-        where2OperatorLabel.text = FilterEnumText(query.filter.rightOperandFilter.op);
-        where2RightOperandLabel.text = query.filter.rightOperandFilter.rightOperandValue.ToString();
+        if (where2LeftOperandLabel) where2LeftOperandLabel.text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
+        if (where2OperatorLabel) where2OperatorLabel.text = FilterEnumText(query.filter.rightOperandFilter.op);
+        if (where2RightOperandLabel) where2RightOperandLabel.text = query.filter.rightOperandFilter.rightOperandValue.ToString();
+
+        // Adjust the group by labels
+        if (groupBy1ButtonLabel) groupBy1ButtonLabel.text = ColumnEnumText(query.groupby.column);
 
         // Adjust the limit labels
-        limitSkipButtonLabel.text = query.limits.linesSkiped == 0 ? "None" : query.limits.linesSkiped.ToString();
-        limitTakeButtonLabel.text = query.limits.linesTaken == 0 ? "All" : query.limits.linesTaken.ToString();
+        if (limitSkipButtonLabel) limitSkipButtonLabel.text = query.limits.linesSkiped == 0 ? "None" : query.limits.linesSkiped.ToString();
+        if (limitTakeButtonLabel) limitTakeButtonLabel.text = query.limits.linesTaken == 0 ? "All" : query.limits.linesTaken.ToString();
     }
 
     /// <summary>
@@ -648,8 +719,8 @@ public class SQLModule : ModuleScript
             case DataQueryAggregatorEnum.Avg: return "AVG";
             case DataQueryAggregatorEnum.Count: return "COUNT";
             case DataQueryAggregatorEnum.Sum: return "SUM";
-            case DataQueryAggregatorEnum.None: return "No\ngrp";
-            default: return "No\ngrp";
+            case DataQueryAggregatorEnum.None: return "None";
+            default: return "None";
         }
     }
 

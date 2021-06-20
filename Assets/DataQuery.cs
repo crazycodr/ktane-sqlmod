@@ -21,7 +21,7 @@ public class DataQuery
     /// <summary>
     /// Represents the group on the data set.
     /// </summary>
-    public readonly DataQueryGroup group = new DataQueryGroup();
+    public readonly DataQueryGroup groupby = new DataQueryGroup();
 
     /// <summary>
     /// Represents the limitations on the result set.
@@ -40,23 +40,25 @@ public class DataQuery
         result.rows = source.rows.Where(row => filter == null || filter.Apply(row)).ToList();
 
         // Now group and aggregate the results or just select the end results
-        if (group.column != DataRowColumnEnum.None)
+        if (groupby.column != DataRowColumnEnum.None)
         {
             // Ensure that all selections are either aggregated or are the column grouped on
             if (selections.Where(s =>
             {
-                return s.aggregator != DataQueryAggregatorEnum.None || (int)s.column == (int)group.column;
+                return s.aggregator != DataQueryAggregatorEnum.None || (int)s.column == (int)groupby.column;
             }).Count() != selections.Count())
             {
                 throw new System.InvalidOperationException("Must aggregate or group on each selection when using a group");
             }
 
             // Create the groups
-            IEnumerable<IGrouping<int, DataRow>> groupedResults = result.rows.GroupBy(row => row.GetValueByColumn(group.column), row => row);
+            var groupedResults = from row in result.rows
+                                 group row by row.GetValueByColumn(groupby.column) into groupedValues
+                                 select groupedValues;
 
             // For each group, apply the aggregators on a new DataRow and add it to the result (after clearing all rows from it)
-            result.rows.Clear();
-            foreach (IGrouping<int, DataRow> grouping in groupedResults)
+            List<DataRow> newRows = new List<DataRow>();
+            foreach (var grouping in groupedResults)
             {
                 DataRow resultingRow = new DataRow();
                 int resultColIndex = 0;
@@ -86,8 +88,9 @@ public class DataQuery
                     }
                     resultColIndex++;
                 }
-                result.rows.Add(resultingRow);
+                newRows.Add(resultingRow);
             }
+            result.rows = newRows;
         }
         else
         {
@@ -130,8 +133,30 @@ public class DataQuery
         string result = "";
         result += "SELECT " + (from s in selections where s.column != DataRowColumnEnum.None select s.ToString()).Join(", ");
         result += filter != null ? " WHERE " + filter.ToString() : "";
+        result += groupby.column != DataRowColumnEnum.None ? " GROUP BY " + ColumnEnumText(groupby.column) : "";
         result += " LIMIT " + (limits.linesTaken == 0 ? 999 : limits.linesTaken) + (limits.linesSkiped > 0 ? ", " + limits.linesSkiped : "");
         return result;
+    }
+
+    /// <summary>
+    /// Simply returns the next data row column value based on current.
+    /// </summary>
+    /// <param name="current">Current enum value</param>
+    /// <returns>Next enum value</returns>
+    private string ColumnEnumText(DataRowColumnEnum current)
+    {
+        switch (current)
+        {
+            case DataRowColumnEnum.ColumnA: return "A";
+            case DataRowColumnEnum.ColumnB: return "B";
+            case DataRowColumnEnum.ColumnC: return "C";
+            case DataRowColumnEnum.ColumnD: return "D";
+            case DataRowColumnEnum.ColumnE: return "E";
+            case DataRowColumnEnum.ColumnF: return "F";
+            case DataRowColumnEnum.ColumnG: return "G";
+            case DataRowColumnEnum.None: return "-";
+            default: return "-";
+        }
     }
 
 }

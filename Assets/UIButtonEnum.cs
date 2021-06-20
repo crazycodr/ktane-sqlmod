@@ -17,6 +17,7 @@ public enum UIButtonEnum
     Where2Left,
     Where2Op,
     Where2Right,
+    GroupBy1,
     LimitTake,
     LimitSkip
 }

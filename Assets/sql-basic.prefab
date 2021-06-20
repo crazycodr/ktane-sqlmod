@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 114738798612003582}
   - component: {fileID: 114868475164870374}
   m_Layer: 0
-  m_Name: sql-simple
+  m_Name: sql-basic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

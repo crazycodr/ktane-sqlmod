@@ -10,7 +10,7 @@ public class DataSetFactory
     /// <summary>
     /// First matrix set of values to use in the game
     /// </summary>
-    public static List<int>[] dataSetMatrix1 = new List<int>[] {
+    public static List<int>[] basicMatrix = new List<int>[] {
         new List<int>() { 9, 3, 0, 2, 0, 4, 6 },
         new List<int>() { 7, 8, 6, 1, 2, 9, 8 },
         new List<int>() { 2, 0, 5, 4, 7, 3, 1 },
@@ -19,6 +19,35 @@ public class DataSetFactory
         new List<int>() { 1, 9, 3, 7, 6, 5, 4 },
         new List<int>() { 8, 5, 4, 3, 1, 8, 2 }
     };
+
+    /// <summary>
+    /// Second matrix set of values to use in the game
+    /// </summary>
+    public static List<int>[] evilMatrix = new List<int>[] {
+        new List<int>() { 9, 5, 0, 2, 1, 0, 3 },
+        new List<int>() { 7, 8, 3, 1, 0, 6, 4 },
+        new List<int>() { 7, 5, 7, 4, 6, 5, 3 },
+        new List<int>() { 9, 8, 0, 4, 1, 0, 4 },
+        new List<int>() { 1, 2, 7, 2, 6, 6, 3 },
+        new List<int>() { 1, 8, 3, 1, 6, 0, 5 },
+        new List<int>() { 9, 2, 7, 2, 1, 5, 5 }
+    };
+
+    /// <summary>
+    /// Returns the dataset associated with a certain difficulty.
+    /// </summary>
+    /// <param name="difficulty">The difficulty of the module</param>
+    /// <returns>A dataset with data in it</returns>
+    public static DataSet FromDifficulty(SqlModuleDifficultyEnum difficulty)
+    {
+        switch (difficulty)
+        {
+            case SqlModuleDifficultyEnum.Evil: return FromIntMatrix(evilMatrix);
+            case SqlModuleDifficultyEnum.Basic:
+            default:
+                return FromIntMatrix(basicMatrix);
+        }
+    }
 
     /// <summary>
     /// Generates a DataSet from a int matrix, used in testing but also in gameplay to load from static datasets.

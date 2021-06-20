@@ -7,9 +7,30 @@ using UnityEngine;
 /// </summary>
 public class DataQueryGenerator
 {
+
+    /// <summary>
+    /// Calls the proper generate method based on difficulty.
+    /// </summary>
+    /// <param name="difficulty">The difficulty</param>
+    /// <param name="source">The source of data to use to generate query</param>
+    /// <returns>The generated data query</returns>
+    public static DataQuery GenerateFromDifficulty(SqlModuleDifficultyEnum difficulty, DataSet source)
+    {
+        switch (difficulty)
+        {
+            case SqlModuleDifficultyEnum.Evil:
+                return GenerateEvil(source);
+
+            case SqlModuleDifficultyEnum.Basic:
+            default:
+                return GenerateSimple(source);
+        }
+    }
+
     /// <summary>
     /// Generates a simple query that uses only basic selections, filters and limits.
     /// </summary>
+    /// <param name="source">The source of data to use to generate query</param>
     /// <returns>Generated data query</returns>
     public static DataQuery GenerateSimple(DataSet source)
     {
@@ -88,6 +109,56 @@ public class DataQueryGenerator
         {
             result.limits.linesTaken = new System.Random().Next(2, resultData.rows.Count);
         }
+
+        // The resulting query is built
+        return result;
+    }
+
+    /// <summary>
+    /// Generates an evil query that uses basic selections and group by operations.
+    /// </summary>
+    /// <param name="source">The source of data to use to generate query</param>
+    /// <returns>Generated data query</returns>
+    public static DataQuery GenerateEvil(DataSet source)
+    {
+        DataQuery result = new DataQuery();
+
+        // These are used to randomize the possible columns and aggregator operations
+        DataRowColumnEnum[] possibleColumns = new DataRowColumnEnum[]
+        {
+            DataRowColumnEnum.ColumnA,
+            DataRowColumnEnum.ColumnB,
+            DataRowColumnEnum.ColumnC,
+            DataRowColumnEnum.ColumnD,
+            DataRowColumnEnum.ColumnE,
+            DataRowColumnEnum.ColumnF,
+            DataRowColumnEnum.ColumnG,
+        };
+        DataQueryAggregatorEnum[] possibleAggregators = new DataQueryAggregatorEnum[]
+        {
+            DataQueryAggregatorEnum.Avg,
+            DataQueryAggregatorEnum.Count,
+            DataQueryAggregatorEnum.Max,
+            DataQueryAggregatorEnum.Min,
+            DataQueryAggregatorEnum.Sum
+        };
+
+        // The selection should always be 3 columns in evil mode with 1 column grouped on (Non-aggregated)
+        foreach (DataRowColumnEnum selectedColumn in possibleColumns.Shuffle().TakeLast(3))
+        {
+            result.selections.Add(new DataQuerySelection(selectedColumn));
+        }
+
+        // Apply an aggregator on each column
+        result.selections[0].aggregator = possibleAggregators.PickRandom();
+        result.selections[1].aggregator = possibleAggregators.PickRandom();
+        result.selections[2].aggregator = possibleAggregators.PickRandom();
+
+        // Revert a random column to be grouped on
+        List<int> revertableIndexes = new List<int>() { 0, 1, 2 };
+        int revertedIndex = revertableIndexes.PickRandom();
+        result.selections[revertedIndex].aggregator = DataQueryAggregatorEnum.None;
+        result.groupby.column = result.selections[revertedIndex].column;
 
         // The resulting query is built
         return result;
