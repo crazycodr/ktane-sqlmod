@@ -48,7 +48,7 @@ public class DataQuery
                 return s.aggregator != DataQueryAggregatorEnum.None || (int)s.column == (int)groupby.column;
             }).Count() != selections.Count())
             {
-                throw new System.InvalidOperationException("Must aggregate or group on each selection when using a group");
+                throw new InvalidOperationException("Must aggregate or group on each selection when using a group");
             }
 
             // Create the groups

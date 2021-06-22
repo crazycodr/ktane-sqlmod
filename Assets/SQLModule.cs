@@ -363,9 +363,18 @@ public class SQLModule : ModuleScript
         PlaySound(KMSoundOverride.SoundEffect.ButtonPress);
 
         // Generate a result from query and source
-        Log("Applying query on source: " + query.ToString());
-        DataSet result = query.Apply(source);
-        Log("Result is: " + result.ToString());
+        DataSet result;
+        try
+        {
+            Log("Applying query on source: " + query.ToString());
+            result = query.Apply(source);
+            Log("Result is: " + result.ToString());
+        }
+        catch (InvalidOperationException ex)
+        {
+            Log("Invalid SQL produced: " + ex.Message);
+            return false;
+        }
 
         // Compare result and goal and strike or solve
         Log("Testing against goal: " + goal.ToString());
