@@ -6124,6 +6124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf0181bbe9a53434b8fd4fc23ca89fa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  difficulty: 0
   modeButton: {fileID: 114751872558224870}
   checkButton: {fileID: 114360303943966360}
   selectionLabel: {fileID: 102925089105327554}
@@ -6141,6 +6142,8 @@ MonoBehaviour:
   where2LeftOperandButton: {fileID: 114946703428307944}
   where2OperatorButton: {fileID: 114941495745566606}
   where2RightOperandButton: {fileID: 114293971742544434}
+  groupByLabel: {fileID: 0}
+  groupBy1Button: {fileID: 0}
   limitSkipLabel: {fileID: 102901643170449650}
   limitTakeLabel: {fileID: 102519299931133948}
   limitTakeButton: {fileID: 114658509193450816}
@@ -6217,24 +6220,34 @@ MonoBehaviour:
   - {fileID: 114360303943966360}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 114805819754214740}
   - {fileID: 114124241966780098}
   - {fileID: 114976439478374848}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 114155753833889758}
   - {fileID: 114994734460230092}
   - {fileID: 114026658634466900}
   - {fileID: 0}
-  - {fileID: 114807134304649192}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 114807134304649192}
+  - {fileID: 114946703428307944}
+  - {fileID: 114941495745566606}
+  - {fileID: 114293971742544434}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 114658509193450816}
   - {fileID: 114685528963558696}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   IsPassThrough: 0
-  ChildRowLength: 4
+  ChildRowLength: 6
   Highlight: {fileID: 114941497612989584}
   SelectableColliders: []
   DefaultSelectableIndex: 0

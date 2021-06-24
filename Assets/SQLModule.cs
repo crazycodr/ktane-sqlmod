@@ -259,6 +259,18 @@ public class SQLModule : ModuleScript
         // Generate a goal
         Log("Generating target query");
         DataQuery targetQuery = DataQueryGenerator.GenerateFromDifficulty(difficulty, source);
+        targetQuery.selections[0].column = DataRowColumnEnum.ColumnB;
+        targetQuery.selections[0].aggregator = DataQueryAggregatorEnum.Min;
+        targetQuery.selections[1].column = DataRowColumnEnum.ColumnA;
+        targetQuery.selections[1].aggregator = DataQueryAggregatorEnum.Min;
+        targetQuery.selections[2].column = DataRowColumnEnum.ColumnC;
+        targetQuery.selections[2].aggregator = DataQueryAggregatorEnum.None;
+        targetQuery.filter.leftOperandColumn = DataRowColumnEnum.ColumnC;
+        targetQuery.filter.op = DataRowFilterOperatorEnum.OperatorNotEqual;
+        targetQuery.filter.rightOperandValue = 7;
+        targetQuery.groupby.column = DataRowColumnEnum.ColumnC;
+        targetQuery.limits.linesSkiped = 0;
+        targetQuery.limits.linesTaken = 999;
         Log("Target query is: " + targetQuery.ToString());
         goal = targetQuery.Apply(source);
         Log("Goal is: " + goal.ToString());
@@ -285,6 +297,10 @@ public class SQLModule : ModuleScript
                 DataRowFilterOperatorEnum.OperatorNone,
                 new DataQueryFilter(DataRowColumnEnum.ColumnA, DataRowFilterOperatorEnum.OperatorEqual, 0)
             );
+        }
+        else if(difficulty == SqlModuleDifficultyEnum.Cruel)
+        {
+            query.filter = new DataQueryFilter(DataRowColumnEnum.ColumnA, DataRowFilterOperatorEnum.OperatorEqual, 0);
         }
 
     }
@@ -373,6 +389,7 @@ public class SQLModule : ModuleScript
         catch (InvalidOperationException ex)
         {
             Log("Invalid SQL produced: " + ex.Message);
+            Strike("Module striked due to invalid query configuration");
             return false;
         }
 
@@ -506,16 +523,41 @@ public class SQLModule : ModuleScript
                 query.selections[2].aggregator = NextAggregatorEnum(query.selections[2].aggregator);
                 break;
             case UIButtonEnum.Where1Left:
-                query.filter.leftOperandFilter.leftOperandColumn = NextFilterColumnEnum(query.filter.leftOperandFilter.leftOperandColumn);
+                if (query.filter.leftOperandFilter != null)
+                {
+                    query.filter.leftOperandFilter.leftOperandColumn = NextFilterColumnEnum(query.filter.leftOperandFilter.leftOperandColumn);
+                }
+                else
+                {
+                    query.filter.leftOperandColumn = NextFilterColumnEnum(query.filter.leftOperandColumn);
+                }
                 break;
             case UIButtonEnum.Where1Op:
-                query.filter.leftOperandFilter.op = NextFilterEnum(query.filter.leftOperandFilter.op);
+                if (query.filter.leftOperandFilter != null)
+                {
+                    query.filter.leftOperandFilter.op = NextFilterEnum(query.filter.leftOperandFilter.op);
+                }
+                else
+                {
+                    query.filter.op = NextFilterEnum(query.filter.op);
+                }
                 break;
             case UIButtonEnum.Where1Right:
-                query.filter.leftOperandFilter.rightOperandValue++;
-                if (query.filter.leftOperandFilter.rightOperandValue > 9)
+                if (query.filter.leftOperandFilter != null)
                 {
-                    query.filter.leftOperandFilter.rightOperandValue = 0;
+                    query.filter.leftOperandFilter.rightOperandValue++;
+                    if (query.filter.leftOperandFilter.rightOperandValue > 9)
+                    {
+                        query.filter.leftOperandFilter.rightOperandValue = 0;
+                    }
+                }
+                else
+                {
+                    query.filter.rightOperandValue++;
+                    if (query.filter.rightOperandValue > 9)
+                    {
+                        query.filter.rightOperandValue = 0;
+                    }
                 }
                 break;
             case UIButtonEnum.Where2Left:
@@ -596,18 +638,19 @@ public class SQLModule : ModuleScript
             where2RightOperandButton.gameObject.SetActive(query.filter.op != DataRowFilterOperatorEnum.OperatorNone);
             if (query.filter.op != DataRowFilterOperatorEnum.OperatorNone)
             {
-                selectableSelf.Children[12] = whereCombinationOperatorButton;
-                selectableSelf.Children[13] = where2LeftOperandButton;
-                selectableSelf.Children[14] = where2OperatorButton;
-                selectableSelf.Children[15] = where2RightOperandButton;
+                // Put where2 operators in the 4/6 columns of row 3 (6*3 = 18->24)
+                selectableSelf.Children[18] = whereCombinationOperatorButton;
+                selectableSelf.Children[19] = where2LeftOperandButton;
+                selectableSelf.Children[20] = where2OperatorButton;
+                selectableSelf.Children[21] = where2RightOperandButton;
                 selectableSelf.UpdateChildren();
             }
             else
             {
-                selectableSelf.Children[12] = whereCombinationOperatorButton;
-                selectableSelf.Children[13] = null;
-                selectableSelf.Children[14] = null;
-                selectableSelf.Children[15] = null;
+                selectableSelf.Children[18] = whereCombinationOperatorButton;
+                selectableSelf.Children[19] = null;
+                selectableSelf.Children[20] = null;
+                selectableSelf.Children[21] = null;
                 selectableSelf.UpdateChildren();
             }
         }
@@ -615,10 +658,15 @@ public class SQLModule : ModuleScript
         // Update the where combination label
         if (whereCombinationOperatorLabel) whereCombinationOperatorLabel.text = FilterEnumText(query.filter.op);
 
-        // Adjust the filter 1 data
-        if (where1LeftOperandLabel) where1LeftOperandLabel.text = ColumnEnumText(query.filter.leftOperandFilter.leftOperandColumn);
-        if (where1OperatorLabel) where1OperatorLabel.text = FilterEnumText(query.filter.leftOperandFilter.op);
-        if (where1RightOperandLabel) where1RightOperandLabel.text = query.filter.leftOperandFilter.rightOperandValue.ToString();
+        // Adjust the filter 1 data when there is a combination filter
+        if (where1LeftOperandLabel && query.filter.leftOperandFilter != null) where1LeftOperandLabel.text = ColumnEnumText(query.filter.leftOperandFilter.leftOperandColumn);
+        if (where1OperatorLabel && query.filter.leftOperandFilter != null) where1OperatorLabel.text = FilterEnumText(query.filter.leftOperandFilter.op);
+        if (where1RightOperandLabel && query.filter.leftOperandFilter != null) where1RightOperandLabel.text = query.filter.leftOperandFilter.rightOperandValue.ToString();
+
+        // Adjust the filter 1 data when these isnt a combination filter
+        if (where1LeftOperandLabel && query.filter.leftOperandFilter == null) where1LeftOperandLabel.text = ColumnEnumText(query.filter.leftOperandColumn);
+        if (where1OperatorLabel && query.filter.leftOperandFilter == null) where1OperatorLabel.text = FilterEnumText(query.filter.op);
+        if (where1RightOperandLabel && query.filter.leftOperandFilter == null) where1RightOperandLabel.text = query.filter.rightOperandValue.ToString();
 
         // Adjust the filter 2 data
         if (where2LeftOperandLabel) where2LeftOperandLabel.text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);

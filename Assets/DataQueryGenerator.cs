@@ -21,6 +21,9 @@ public class DataQueryGenerator
             case SqlModuleDifficultyEnum.Evil:
                 return GenerateEvil(source);
 
+            case SqlModuleDifficultyEnum.Cruel:
+                return GenerateCruel(source);
+
             case SqlModuleDifficultyEnum.Basic:
             default:
                 return GenerateSimple(source);
@@ -115,7 +118,7 @@ public class DataQueryGenerator
     }
 
     /// <summary>
-    /// Generates an evil query that uses basic selections and group by operations.
+    /// Generates an evil query that uses aggregated selections and group by operations.
     /// </summary>
     /// <param name="source">The source of data to use to generate query</param>
     /// <returns>Generated data query</returns>
@@ -159,6 +162,85 @@ public class DataQueryGenerator
         int revertedIndex = revertableIndexes.PickRandom();
         result.selections[revertedIndex].aggregator = DataQueryAggregatorEnum.None;
         result.groupby.column = result.selections[revertedIndex].column;
+
+        // The resulting query is built
+        return result;
+    }
+
+    /// <summary>
+    /// Generates a cruel query that uses aggregated selections, filters, groups and limits.
+    /// </summary>
+    /// <param name="source">The source of data to use to generate query</param>
+    /// <returns>Generated data query</returns>
+    public static DataQuery GenerateCruel(DataSet source)
+    {
+        DataQuery result = new DataQuery();
+
+        // These are used to randomize the possible columns and aggregator operations
+        DataRowColumnEnum[] possibleColumns = new DataRowColumnEnum[]
+        {
+            DataRowColumnEnum.ColumnA,
+            DataRowColumnEnum.ColumnB,
+            DataRowColumnEnum.ColumnC,
+            DataRowColumnEnum.ColumnD,
+            DataRowColumnEnum.ColumnE,
+            DataRowColumnEnum.ColumnF,
+            DataRowColumnEnum.ColumnG,
+        };
+        DataRowFilterOperatorEnum[] possibleOperators = new DataRowFilterOperatorEnum[]
+        {
+                DataRowFilterOperatorEnum.OperatorGreaterThan,
+                DataRowFilterOperatorEnum.OperatorLessThan,
+                DataRowFilterOperatorEnum.OperatorNotEqual,
+                DataRowFilterOperatorEnum.OperatorEqual
+        };
+        DataQueryAggregatorEnum[] possibleAggregators = new DataQueryAggregatorEnum[]
+        {
+            DataQueryAggregatorEnum.Avg,
+            DataQueryAggregatorEnum.Count,
+            DataQueryAggregatorEnum.Max,
+            DataQueryAggregatorEnum.Min,
+            DataQueryAggregatorEnum.Sum
+        };
+
+        // The selection should always be 3 columns in evil mode with 1 column grouped on (Non-aggregated)
+        foreach (DataRowColumnEnum selectedColumn in possibleColumns.Shuffle().TakeLast(3))
+        {
+            result.selections.Add(new DataQuerySelection(selectedColumn));
+        }
+
+        // Set a filter and group by and keep doing it as long as the result yields incorrect amount of data
+        do
+        {
+            // Craft a filter
+            result.filter = new DataQueryFilter(result.selections.PickRandom().column, possibleOperators.PickRandom(), new System.Random().Next(0, 9));
+
+            // Apply an aggregator on each column
+            result.selections[0].aggregator = possibleAggregators.PickRandom();
+            result.selections[1].aggregator = possibleAggregators.PickRandom();
+            result.selections[2].aggregator = possibleAggregators.PickRandom();
+
+            // Revert a random column to be grouped on
+            List<int> revertableIndexes = new List<int>() { 0, 1, 2 };
+            int revertedIndex = revertableIndexes.PickRandom();
+            result.selections[revertedIndex].aggregator = DataQueryAggregatorEnum.None;
+            result.groupby.column = result.selections[revertedIndex].column;
+        }
+        while (result.Apply(source).rows.Count < 2 || result.Apply(source).rows.Count == source.rows.Count);
+
+        // If the result yields 3 or more rows, skip 0 to 1 row
+        DataSet resultData = result.Apply(source);
+        if (resultData.rows.Count >= 3)
+        {
+            result.limits.linesSkiped = new System.Random().Next(0, 1);
+        }
+
+        // If the result yields 2 or more rows, take N to N-1 row
+        resultData = result.Apply(source);
+        if (resultData.rows.Count >= 3)
+        {
+            result.limits.linesTaken = new System.Random().Next(resultData.rows.Count - 1, resultData.rows.Count);
+        }
 
         // The resulting query is built
         return result;

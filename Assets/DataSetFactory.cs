@@ -34,6 +34,22 @@ public class DataSetFactory
     };
 
     /// <summary>
+    /// Third matrix set of values to use in the game
+    /// </summary>
+    public static List<int>[] cruelMatrix = new List<int>[] {
+        new List<int>() { 9, 5, 0, 2, 1, 0, 3 },
+        new List<int>() { 7, 8, 3, 1, 0, 6, 4 },
+        new List<int>() { 7, 5, 7, 4, 6, 5, 3 },
+        new List<int>() { 9, 8, 0, 4, 1, 0, 4 },
+        new List<int>() { 1, 2, 7, 2, 6, 6, 3 },
+        new List<int>() { 1, 8, 3, 1, 6, 0, 5 },
+        new List<int>() { 9, 2, 7, 2, 1, 5, 5 },
+        new List<int>() { 1, 5, 7, 2, 6, 6, 4 },
+        new List<int>() { 7, 8, 0, 4, 0, 0, 4 },
+        new List<int>() { 9, 2, 0, 1, 1, 5, 5 }
+    };
+
+    /// <summary>
     /// Returns the dataset associated with a certain difficulty.
     /// </summary>
     /// <param name="difficulty">The difficulty of the module</param>
@@ -43,6 +59,7 @@ public class DataSetFactory
         switch (difficulty)
         {
             case SqlModuleDifficultyEnum.Evil: return FromIntMatrix(evilMatrix);
+            case SqlModuleDifficultyEnum.Cruel: return FromIntMatrix(cruelMatrix);
             case SqlModuleDifficultyEnum.Basic:
             default:
                 return FromIntMatrix(basicMatrix);
