@@ -67,7 +67,7 @@ public class DataQuery
                     switch (selection.aggregator)
                     {
                         case DataQueryAggregatorEnum.Avg:
-                            resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, (int)Math.Round(grouping.Average(row => row.GetValueByColumn(selection.column)), 0));
+                            resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, (int)Math.Floor(grouping.Average(row => row.GetValueByColumn(selection.column))));
                             break;
                         case DataQueryAggregatorEnum.Count:
                             resultingRow.SetValueByColumn((DataRowColumnEnum)resultColIndex, grouping.Count());

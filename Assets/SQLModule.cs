@@ -259,18 +259,6 @@ public class SQLModule : ModuleScript
         // Generate a goal
         Log("Generating target query");
         DataQuery targetQuery = DataQueryGenerator.GenerateFromDifficulty(difficulty, source);
-        targetQuery.selections[0].column = DataRowColumnEnum.ColumnB;
-        targetQuery.selections[0].aggregator = DataQueryAggregatorEnum.Min;
-        targetQuery.selections[1].column = DataRowColumnEnum.ColumnA;
-        targetQuery.selections[1].aggregator = DataQueryAggregatorEnum.Min;
-        targetQuery.selections[2].column = DataRowColumnEnum.ColumnC;
-        targetQuery.selections[2].aggregator = DataQueryAggregatorEnum.None;
-        targetQuery.filter.leftOperandColumn = DataRowColumnEnum.ColumnC;
-        targetQuery.filter.op = DataRowFilterOperatorEnum.OperatorNotEqual;
-        targetQuery.filter.rightOperandValue = 7;
-        targetQuery.groupby.column = DataRowColumnEnum.ColumnC;
-        targetQuery.limits.linesSkiped = 0;
-        targetQuery.limits.linesTaken = 999;
         Log("Target query is: " + targetQuery.ToString());
         goal = targetQuery.Apply(source);
         Log("Goal is: " + goal.ToString());

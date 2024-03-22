@@ -63,9 +63,7 @@ public class DataQueryGenerator
                 DataRowFilterOperatorEnum.OperatorOr
         };
 
-        // Prepare the selections between 2 and 3 columns at random, use PickRandom because "new Random.next(2, 3)" always yield 2
-        List<int> possibleColumnCounts = new List<int>() { 2, 3 };
-        int numColumns = possibleColumnCounts.PickRandom();
+        int numColumns = 3;
         foreach (DataRowColumnEnum selectedColumn in possibleColumns.Shuffle().TakeLast(numColumns))
         {
             result.selections.Add(new DataQuerySelection(selectedColumn));
