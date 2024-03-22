@@ -62,16 +62,18 @@ public class DataQueryGenerator
                 DataRowFilterOperatorEnum.OperatorAnd,
                 DataRowFilterOperatorEnum.OperatorOr
         };
-
-        int numColumns = 3;
-        foreach (DataRowColumnEnum selectedColumn in possibleColumns.Shuffle().TakeLast(numColumns))
+			
+		// Prepare a random number of columns, use PickRandom because "new Random.next(2, 3)" always yield 2
+		List<int> possibleColumnCounts = new List<int>() { 2, 3 };
+		int numColumns = possibleColumnCounts.PickRandom();
+		foreach (DataRowColumnEnum selectedColumn in possibleColumns.Shuffle().TakeLast(numColumns))
         {
             result.selections.Add(new DataQuerySelection(selectedColumn));
         }
 
-        // Prepare a random number of filters, use PickRandom because "new Random.next(1, 2)" always yield 1
-        List<int> possibleFilterCounts = new List<int>() { 1, 2 };
-        int numRandomFilters = possibleFilterCounts.PickRandom();
+		// Prepare a random number of filters, use PickRandom because "new Random.next(1, 2)" always yield 1
+		List<int> possibleFilterCounts = new List<int>() { 1, 2 };
+		int numRandomFilters = possibleFilterCounts.PickRandom();
         if (numRandomFilters == 1)
         {
             // Set a filter and keep doing it as long as the result yields no data
