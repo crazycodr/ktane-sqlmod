@@ -1,9 +1,12 @@
 ﻿using KeepCoding;
 using System;
 using UnityEngine;
+using System.Collections;
+using System.Text.RegularExpressions;
 
 public class SQLModule : ModuleScript
 {
+    public string TwitchHelpMessage = "Try to find the SQL query to produce the goal output based on the manual's dataset. Use help-base to see all commands you can run.";
 
     /// <summary>
     /// Represent the module's difficulty, changes different things that can happen
@@ -657,9 +660,9 @@ public class SQLModule : ModuleScript
         if (where1RightOperandLabel && query.filter.leftOperandFilter == null) where1RightOperandLabel.text = query.filter.rightOperandValue.ToString();
 
         // Adjust the filter 2 data
-        if (where2LeftOperandLabel) where2LeftOperandLabel.text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
-        if (where2OperatorLabel) where2OperatorLabel.text = FilterEnumText(query.filter.rightOperandFilter.op);
-        if (where2RightOperandLabel) where2RightOperandLabel.text = query.filter.rightOperandFilter.rightOperandValue.ToString();
+        if (where2LeftOperandLabel && query.filter.rightOperandFilter != null) where2LeftOperandLabel.text = ColumnEnumText(query.filter.rightOperandFilter.leftOperandColumn);
+        if (where2OperatorLabel && query.filter.rightOperandFilter != null) where2OperatorLabel.text = FilterEnumText(query.filter.rightOperandFilter.op);
+        if (where2RightOperandLabel && query.filter.rightOperandFilter != null) where2RightOperandLabel.text = query.filter.rightOperandFilter.rightOperandValue.ToString();
 
         // Adjust the group by labels
         if (groupBy1ButtonLabel) groupBy1ButtonLabel.text = ColumnEnumText(query.groupby.column);
@@ -826,4 +829,433 @@ public class SQLModule : ModuleScript
         }
     }
 
+    private string GetSelectAggregatorMatcher(int index) {
+        return string.Format("(?<agg{0}>MIN|MAX|COUNT|SUM|AVG|-)\\s*\\(\\s*{1}\\s*\\)\\s*", index, GetSelectFieldMatcher("agg", index));
+    }
+
+    private string GetSelectFieldMatcher(string prefix, int index) {
+        return string.Format("(?<{0}field{1}>A|B|C|D|E|F|G|-)", prefix, index);
+    }
+
+    private string GetSelectClauseMatcher(int index) {
+        if (supportsGroupBy()) {
+            return string.Format("(?<selectclause{0}>{1}|{2})", index, GetSelectAggregatorMatcher(index), GetSelectFieldMatcher("", index));
+        } else {
+            return string.Format("(?<selectclause{0}>{1})", index, GetSelectFieldMatcher("", index));
+        }
+    }
+
+    private string GetSelectMatcher() {
+        return string.Format("^\\s*SELECT\\s+{0}\\s*,\\s*{1}\\s*,\\s*{2}\\s*$", GetSelectClauseMatcher(1), GetSelectClauseMatcher(2), GetSelectClauseMatcher(3));
+    }
+
+    private string GetPreSelectMatcher() {
+        return string.Format("^\\s*SELECT.*$");
+    }
+
+    private string GetWhereFieldMatcher(int index) {
+        return string.Format("(?<wherefield{0}>A|B|C|D|E|F|G)", index);
+    }
+
+    private string GetWhereOperatorMatcher(int index) {
+        return string.Format("(?<whereoperator{0}>=|<>|<|<=|>|>=)", index);
+    }
+
+    private string GetWhereValueMatcher(int index) {
+        return string.Format("(?<wherevalue{0}>1|2|3|4|5|6|7|8|9|0)", index);
+    }
+
+    private string GetWhereJoinMatcher() {
+        return "(?<wherejoin>OR|AND)";
+    }
+
+    private string GetWhereClauseMatcher(int index) {
+        return string.Format("(?<whereclause{0}>{1}\\s*{2}\\s*{3})", index, GetWhereFieldMatcher(index), GetWhereOperatorMatcher(index), GetWhereValueMatcher(index));
+    }
+
+    private string GetWhereMatcher() {
+        return string.Format("^\\s*WHERE\\s+{0}(\\s+{1}\\s+{2})?\\s*$", GetWhereClauseMatcher(1), GetWhereJoinMatcher(), GetWhereClauseMatcher(2));
+    }
+
+    private string GetPreWhereMatcher() {
+        return string.Format("^\\s*WHERE.*$");
+    }
+
+    private string GetGroupByFieldMatcher() {
+        return "(?<groupByField>A|B|C|D|E|F|G|-)";
+    }
+
+    private string GetGroupByMatcher() {
+        return string.Format("^\\s*GROUP\\s+BY\\s+{0}\\s*$", GetGroupByFieldMatcher());
+    }
+
+    private string GetPreGroupByMatcher() {
+        return string.Format("^\\s*GROUP.*$");
+    }
+
+    private string GetLimitValueMatcher(string name) {
+        return string.Format("(?<{0}>1|2|3|4|5|6|7|8|9|0)", name);
+    }
+
+    private string GetLimitMatcher() {
+        return string.Format("^\\s*LIMIT\\s+{0}((\\s+OFFSET\\s+{1})|(\\s*,\\s*{1}))?\\s*$", GetLimitValueMatcher("limitValue"), GetLimitValueMatcher("offsetValue"));
+    }
+
+    private string GetPreLimitMatcher() {
+        return string.Format("^\\s*LIMIT.*$");
+    }
+
+    private DataQueryAggregatorEnum StringToAggregatorEnum(string aggregator)
+    {
+        switch(aggregator.ToUpper())
+        {
+        case "SUM":
+            return DataQueryAggregatorEnum.Sum;
+        case "AVG":
+            return DataQueryAggregatorEnum.Avg;
+        case "COUNT":
+            return DataQueryAggregatorEnum.Count;
+        case "MIN":
+            return DataQueryAggregatorEnum.Min;
+        case "MAX":
+            return DataQueryAggregatorEnum.Max;
+        default:
+            return DataQueryAggregatorEnum.None;
+        }
+    }
+
+    private DataRowColumnEnum StringToColumnEnum(string column)
+    {
+        switch(column.ToUpper())
+        {
+        case "A":
+            return DataRowColumnEnum.ColumnA;
+        case "B":
+            return DataRowColumnEnum.ColumnB;
+        case "C":
+            return DataRowColumnEnum.ColumnC;
+        case "D":
+            return DataRowColumnEnum.ColumnD;
+        case "E":
+            return DataRowColumnEnum.ColumnE;
+        case "F":
+            return DataRowColumnEnum.ColumnF;
+        case "G":
+            return DataRowColumnEnum.ColumnG;
+        default:
+            return DataRowColumnEnum.None;
+        }
+    }
+
+    private DataRowFilterOperatorEnum StringToFilterEnum(string filter)
+    {
+        switch(filter.ToUpper())
+        {
+        case "=":
+            return DataRowFilterOperatorEnum.OperatorEqual;
+        case "<>":
+            return DataRowFilterOperatorEnum.OperatorNotEqual;
+        case "<":
+            return DataRowFilterOperatorEnum.OperatorLessThan;
+        case "<=":
+            return DataRowFilterOperatorEnum.OperatorLessThanOrEqual;
+        case ">":
+            return DataRowFilterOperatorEnum.OperatorGreaterThan;
+        case ">=":
+            return DataRowFilterOperatorEnum.OperatorGreaterThanOrEqual;
+        default:
+            return DataRowFilterOperatorEnum.OperatorEqual;
+        }
+    }
+
+    private DataRowFilterOperatorEnum StringToJoinEnum(string filter)
+    {
+        switch(filter.ToUpper())
+        {
+        case "AND":
+            return DataRowFilterOperatorEnum.OperatorAnd;
+        case "OR":
+            return DataRowFilterOperatorEnum.OperatorOr;
+        default:
+            return DataRowFilterOperatorEnum.OperatorNone;
+        }
+    }
+
+    private int StringToInt(string value)
+    {
+        switch(value)
+        {
+        case "1":
+            return 1;
+        case "2":
+            return 2;
+        case "3":
+            return 3;
+        case "4":
+            return 4;
+        case "5":
+            return 5;
+        case "6":
+            return 6;
+        case "7":
+            return 7;
+        case "8":
+            return 8;
+        case "9":
+            return 9;
+        case "0":
+            return 0;
+        default:
+            return 0;
+        }
+    }
+
+    private void processSelectMatcher(Match selectMatcher) {
+        if (supportsGroupBy() && selectMatcher.Groups["wherefield1"].Captures.Count == 1 && selectMatcher.Groups["aggfield1"].Captures.Count == 1) {
+            query.selections[0].aggregator = StringToAggregatorEnum(selectMatcher.Groups["agg1"].Value);
+            query.selections [0].column = StringToColumnEnum(selectMatcher.Groups ["aggfield1"].Value);
+        } else if (selectMatcher.Groups["field1"].Captures.Count == 1) {
+            query.selections [0].column = StringToColumnEnum(selectMatcher.Groups ["field1"].Value);
+        }
+        if (supportsGroupBy() && selectMatcher.Groups["agg2"].Captures.Count == 1 && selectMatcher.Groups["aggfield2"].Captures.Count == 1) {
+            query.selections[1].aggregator = StringToAggregatorEnum(selectMatcher.Groups["agg2"].Value);
+            query.selections [1].column = StringToColumnEnum(selectMatcher.Groups ["aggfield2"].Value);
+        } else if (selectMatcher.Groups["field2"].Captures.Count == 1) {
+            query.selections [1].column = StringToColumnEnum(selectMatcher.Groups ["field2"].Value);
+        }
+        if (supportsGroupBy() && selectMatcher.Groups["agg3"].Captures.Count == 1 && selectMatcher.Groups["aggfield3"].Captures.Count == 1) {
+            query.selections[2].aggregator = StringToAggregatorEnum(selectMatcher.Groups["agg3"].Value);
+            query.selections [2].column = StringToColumnEnum(selectMatcher.Groups ["aggfield3"].Value);
+        } else if (selectMatcher.Groups["field3"].Captures.Count == 1) {
+            query.selections [2].column = StringToColumnEnum(selectMatcher.Groups ["field3"].Value);
+        }
+        UpdateUI ();
+    }
+
+    private void processWhereMatcher(Match whereMatcher) {
+        if (
+            supportsWhere()
+            && whereMatcher.Groups["wherefield1"].Captures.Count == 1 
+            && whereMatcher.Groups["whereoperator1"].Captures.Count == 1 
+            && whereMatcher.Groups["wherevalue1"].Captures.Count == 1
+            && whereMatcher.Groups["wherejoin"].Captures.Count == 1 
+            && whereMatcher.Groups["wherefield2"].Captures.Count == 1 
+            && whereMatcher.Groups["whereoperator2"].Captures.Count == 1 
+            && whereMatcher.Groups["wherevalue2"].Captures.Count == 1
+        ) {
+            DataQueryFilter leftFilter = new DataQueryFilter (
+                StringToColumnEnum (whereMatcher.Groups ["wherefield1"].Value),
+                StringToFilterEnum (whereMatcher.Groups ["whereoperator1"].Value),
+                StringToInt(whereMatcher.Groups ["wherevalue1"].Value)
+            );
+            DataQueryFilter rightFilter = new DataQueryFilter (
+                StringToColumnEnum (whereMatcher.Groups ["wherefield2"].Value),
+                StringToFilterEnum (whereMatcher.Groups ["whereoperator2"].Value),
+                StringToInt(whereMatcher.Groups ["wherevalue2"].Value)
+            );
+            query.filter = new DataQueryFilter (
+                leftFilter,
+                StringToJoinEnum (whereMatcher.Groups ["wherejoin"].Value),
+                rightFilter
+            );
+        }
+        else if (
+            supportsWhere()
+            && whereMatcher.Groups["wherefield1"].Captures.Count == 1 
+            && whereMatcher.Groups["whereoperator1"].Captures.Count == 1 
+            && whereMatcher.Groups["wherevalue1"].Captures.Count == 1
+        ) {
+            DataQueryFilter leftFilter = new DataQueryFilter (
+                StringToColumnEnum (whereMatcher.Groups ["wherefield1"].Value),
+                StringToFilterEnum (whereMatcher.Groups ["whereoperator1"].Value),
+                StringToInt(whereMatcher.Groups ["wherevalue1"].Value)
+            );
+            DataQueryFilter rightFilter = new DataQueryFilter (
+                DataRowColumnEnum.ColumnA,
+                DataRowFilterOperatorEnum.OperatorEqual,
+                0
+            );
+            query.filter = new DataQueryFilter (
+                leftFilter,
+                DataRowFilterOperatorEnum.OperatorNone,
+                rightFilter
+            );
+        }
+        UpdateUI ();
+    }
+
+    private void processGroupByMatcher(Match groupByMatcher) {
+        if (supportsGroupBy() && groupByMatcher.Groups["groupByField"].Captures.Count == 1) {
+            query.groupby.column = StringToColumnEnum(groupByMatcher.Groups["groupByField"].Value);
+        }
+        UpdateUI ();
+    }
+
+    private void processLimitMatcher(Match limitMatcher) {
+        if (supportsLimits() && limitMatcher.Groups["limitValue"].Captures.Count == 1) {
+            query.limits.linesTaken = StringToInt(limitMatcher.Groups["limitValue"].Value);
+            if (limitMatcher.Groups["offsetValue"].Captures.Count == 1) {
+                query.limits.linesSkiped = StringToInt(limitMatcher.Groups["offsetValue"].Value);
+            }
+        }
+        UpdateUI ();
+    }
+
+    public IEnumerator ProcessTwitchCommand(string command)
+    {
+        Match helpBaseMatcher = Regex.Match (command, "help-base", RegexOptions.IgnoreCase);
+        if (helpBaseMatcher.Success) {
+            yield return null;
+            yield return "sendtochat Craft an SQL query to reproduce the goal of the module based on the manual's dataset.";
+            yield return "sendtochat Available commands are:";
+            yield return "sendtochat - help-base (This command)";
+            yield return "sendtochat - toggle (Flip between toggle and editor views)";
+            yield return "sendtochat - check or submit (Submits the module for verification)";
+            if (supportsWhere ()) {
+                yield return "sendtochat - help-where (How to send WHERE statements)";
+            }
+            if (supportsGroupBy ()) {
+                yield return "sendtochat - help-group-by (How to send GROUP BY statements)";
+            }
+            if (supportsLimits ()) {
+                yield return "sendtochat - help-limit (How to send LIMIT statements)";
+            }
+            yield break;
+        }
+
+        Match helpSelectMatcher = Regex.Match (command, "help-select", RegexOptions.IgnoreCase);
+        if (helpSelectMatcher.Success) {
+            yield return null;
+            yield return "sendtochat Example of select commands:";
+            yield return "sendtochat 'SELECT A, B, C' will set the fields to A, B and C respectively.";
+            yield return "sendtochat Columns can be A, B, C, D, E, F or G, but also '-' for none.";
+            if (supportsGroupBy ()) {
+                yield return "sendtochat When working with aggregators you must wrap the column with an aggregator function:";
+                yield return "sendtochat 'SELECT AVG(A), SUM(B), D' will set average on column A in slot 1, sum on column B in slot 2 and no aggregator on column D in slot 3.";
+                yield return "sendtochat Aggregators can be SUM, MIN, MAX, COUNT, AVG.";
+            }
+            yield break;
+        }
+
+        if (supportsWhere()) {
+            Match helpWhereMatcher = Regex.Match (command, "help-where", RegexOptions.IgnoreCase);
+            if (helpWhereMatcher.Success) {
+                yield return null;
+                yield return "sendtochat Example of where commands:";
+                yield return "sendtochat 'WHERE A = 3' will set 1 condition to evaluate A to be equal to 3.";
+                yield return "sendtochat Columns can be A, B, C, D, E, F or G.";
+                yield return "sendtochat You can also create two conditions and join them with AND or OR:";
+                yield return "sendtochat 'WHERE A = 3 OR B <= 4' or 'WHERE F >= 7 AND C < 3'";
+                yield return "sendtochat The operators for the conditions can be '=' (Equal), '<>' (Not equals), '<' (Less than), '<=' (Less than or equals) or the reverse of the last two '>' and '>='.";
+                yield break;
+            }
+        }
+
+        if (supportsGroupBy ()) {
+            Match helpGroupByMatcher = Regex.Match (command, "group-by", RegexOptions.IgnoreCase);
+            if (helpGroupByMatcher.Success) {
+                yield return null;
+                yield return "sendtochat Example of group by commands:";
+                yield return "sendtochat 'GROUP BY A' will set the group by column to A.";
+                yield return "sendtochat Columns can be A, B, C, D, E, F or G.";
+                yield break;
+            }
+        }
+
+        if (supportsLimits ()) {
+            Match helpLimitMatcher = Regex.Match (command, "help-limit", RegexOptions.IgnoreCase);
+            if (helpLimitMatcher.Success) {
+                yield return null;
+                yield return "sendtochat Example of LIMIT commands:";
+                yield return "sendtochat 'LIMIT 4' will set 4 rows to be conserved only.";
+                yield return "sendtochat 'LIMIT 4, 2' will set 4 rows to be conserved and 2 rows to be skipped.";
+                yield return "sendtochat Alternatively, you can also express the same with 'LIMIT 4 OFFSET 2'.";
+                yield break;
+            }
+        }
+
+
+        Match toggleMatcher = Regex.Match (command, "toggle", RegexOptions.IgnoreCase);
+        if (toggleMatcher.Success) {
+            OnModeChange ();
+            yield break;
+        }
+
+
+        Match checkMatcher = Regex.Match (command, "check|submit", RegexOptions.IgnoreCase);
+        if (checkMatcher.Success) {
+            OnCheck ();
+            yield break;
+        }
+
+
+        Match selectMatcher = Regex.Match (command, GetSelectMatcher(), RegexOptions.IgnoreCase);
+        Match preSelectMatcher = Regex.Match (command, GetPreSelectMatcher(), RegexOptions.IgnoreCase);
+        if (preSelectMatcher.Success && selectMatcher.Success) {
+            processSelectMatcher(selectMatcher);
+            yield return null;
+            yield break;
+        }
+        else if (preSelectMatcher.Success && !selectMatcher.Success) {
+            yield return "sendtochaterror SELECT command format error, use help-select to get help.";
+            yield break;
+        }
+
+
+        if (supportsWhere ()) {
+            Match whereMatcher = Regex.Match (command, GetWhereMatcher (), RegexOptions.IgnoreCase);
+            Match preWhereMatcher = Regex.Match (command, GetPreWhereMatcher (), RegexOptions.IgnoreCase);
+            if (preWhereMatcher.Success && whereMatcher.Success) {
+                processWhereMatcher (whereMatcher);
+                yield return null;
+                yield break;
+            } else if (preWhereMatcher.Success && !whereMatcher.Success) {
+                yield return "sendtochaterror WHERE command format error, use help-where to get help.";
+                yield break;
+            }
+        }
+
+        if (supportsGroupBy ()) {
+            Match groupByMatcher = Regex.Match (command, GetGroupByMatcher (), RegexOptions.IgnoreCase);
+            Match preGroupByMatcher = Regex.Match (command, GetPreGroupByMatcher (), RegexOptions.IgnoreCase);
+            if (preGroupByMatcher.Success && groupByMatcher.Success) {
+                processGroupByMatcher (groupByMatcher);
+                yield return null;
+                yield break;
+            } else if (preGroupByMatcher.Success && !groupByMatcher.Success) {
+                yield return "sendtochaterror GROUP BY command format error, use help-group-by to get help.";
+                yield break;
+            }
+        }
+
+        if (supportsLimits ()) {
+            Match limitMatcher = Regex.Match (command, GetLimitMatcher (), RegexOptions.IgnoreCase);
+            Match preLimitMatcher = Regex.Match (command, GetPreLimitMatcher (), RegexOptions.IgnoreCase);
+            if (preLimitMatcher.Success && limitMatcher.Success) {
+                processLimitMatcher (limitMatcher);
+                yield return null;
+                yield break;
+            } else if (preLimitMatcher.Success && !limitMatcher.Success) {
+                yield return "sendtochaterror LIMIT command format error, use help-limit to get help.";
+                yield break;
+            }
+        }
+
+        yield return "sendtochaterror Command unknown: " + command;
+    }
+
+    private bool supportsGroupBy(){
+        return difficulty == SqlModuleDifficultyEnum.Evil
+            || difficulty == SqlModuleDifficultyEnum.Cruel;
+    }
+
+    private bool supportsWhere(){
+        return difficulty == SqlModuleDifficultyEnum.Basic
+            || difficulty == SqlModuleDifficultyEnum.Cruel;
+    }
+
+    private bool supportsLimits(){
+        return difficulty == SqlModuleDifficultyEnum.Basic
+            || difficulty == SqlModuleDifficultyEnum.Cruel;
+    }
 }
