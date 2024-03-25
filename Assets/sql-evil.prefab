@@ -4339,6 +4339,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf0181bbe9a53434b8fd4fc23ca89fa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _editorRuleSeed: 1
+  TwitchHelpMessage: Try to find the SQL query to produce the goal output based on
+    the manual's dataset. Use help-base to see all commands you can run.
   difficulty: 1
   modeButton: {fileID: 114600302441061220}
   checkButton: {fileID: 114684356131091606}
